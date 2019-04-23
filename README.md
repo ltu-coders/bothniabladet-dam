@@ -1,3 +1,2 @@
-#Bothniabladet Project 
-##Team
-##Anton Olauson, Fredrik Harnevik, Mihail Cobzev, Ruslan Ivanov, Sebastian Häyry
+Bothniabladet Project 
+Team:Anton Olauson, Fredrik Harnevik, Mihail Cobzev, Ruslan Ivanov, Sebastian HÃ¤yry
