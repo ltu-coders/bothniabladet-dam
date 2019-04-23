@@ -12,7 +12,7 @@ Assignment of creating a web application for Bothniabladet @ Lulea Tekniska Univ
 
 ## Authors
 
-**Anton Olauson, Fredrik Harnevik, Mihail Cobzev, Ruslan Ivanov, Sebastian Häyry**
+**Anton Olason, Fredrik Harnevik, Mihail Cobzev, Ruslan Ivanov, Sebastian Häyry**
 
 
 ## License
