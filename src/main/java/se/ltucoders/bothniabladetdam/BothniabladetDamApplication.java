@@ -10,4 +10,6 @@ public class BothniabladetDamApplication {
         SpringApplication.run(BothniabladetDamApplication.class, args);
     }
 
+
+
 }

@@ -5,18 +5,18 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Images")
-public class Images {
+@Table(name = "Image")
+public class Image implements File {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int imageId;
 
     private String fileName;
 
     private String filePath;
 
-    private Users author;
+    //private Users author;
 
     private String description;
 
@@ -38,7 +38,7 @@ public class Images {
 
     private BigDecimal price;
 
-    public Images() {
+    public Image() {
     }
 
     public int getImageId() {
@@ -65,13 +65,13 @@ public class Images {
         this.filePath = filePath;
     }
 
-    public Users getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Users author) {
-        this.author = author;
-    }
+//    public Users getAuthor() {
+//        return author;
+//    }
+//
+//    public void setAuthor(Users author) {
+//        this.author = author;
+//    }
 
     public String getDescription() {
         return description;
