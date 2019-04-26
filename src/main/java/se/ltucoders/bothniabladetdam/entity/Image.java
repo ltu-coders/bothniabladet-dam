@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Images")
-public class Image {
+public class Image implements File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,6 +88,7 @@ public class Image {
     public void setAuthor(Users author) {
         this.author = author;
     }
+
 
     public String getDescription() {
         return description;
