@@ -6,39 +6,55 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Images")
-public class Images {
+public class Image {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "imageId")
     private int imageId;
 
+    @Column(name = "fileName")
     private String fileName;
 
+    @Column(name = "filePath")
     private String filePath;
 
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "author")
     private Users author;
 
+    @Column(name = "description")
     private String description;
 
+    @Column(name = "resolution")
     private String resolution;
 
+    @Column(name = "fileSize")
     private String fileSize;
 
+    @Column(name = "dateTime")
     private LocalDateTime dateTime;
 
+    @Column(name = "make")
     private String make;
 
+    @Column(name = "model")
     private String model;
 
+    @Column(name = "location")
     private String location;
 
+    @Column(name = "licenseType")
     private String licenseType;
 
+    @Column(name = "noOfAllowedUses")
     private int noOfAllowedUses;
 
+    @Column(name = "price")
     private BigDecimal price;
 
-    public Images() {
+    public Image() {
     }
 
     public int getImageId() {
