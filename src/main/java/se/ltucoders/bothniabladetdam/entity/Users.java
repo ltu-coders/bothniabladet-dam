@@ -1,6 +1,7 @@
 package se.ltucoders.bothniabladetdam.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Users")
@@ -10,21 +11,36 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
 
+    @Column(name = "userName")
     private String userName;
 
+    @Column(name = "firstName")
     private String firstName;
 
+    @Column(name = "lastName")
     private String lastName;
 
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "userType")
     private String userType;
 
+    @Column(name = "discount")
     private String discount;
 
+    @Column(name = "passwordHash")
     private String passwordHash;
 
+    @Column(name = "passwordSalt")
     private String passwordSalt;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "author",
+            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    private List<Image> images;
+
 
     public Users() {
     }

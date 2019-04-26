@@ -5,37 +5,53 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Image")
+@Table(name = "Images")
 public class Image implements File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "imageId")
     private int imageId;
 
+    @Column(name = "fileName")
     private String fileName;
 
+    @Column(name = "filePath")
     private String filePath;
 
-    //private Users author;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "author")
+    private Users author;
 
+    @Column(name = "description")
     private String description;
 
+    @Column(name = "resolution")
     private String resolution;
 
+    @Column(name = "fileSize")
     private String fileSize;
 
+    @Column(name = "dateTime")
     private LocalDateTime dateTime;
 
+    @Column(name = "make")
     private String make;
 
+    @Column(name = "model")
     private String model;
 
+    @Column(name = "location")
     private String location;
 
+    @Column(name = "licenseType")
     private String licenseType;
 
+    @Column(name = "noOfAllowedUses")
     private int noOfAllowedUses;
 
+    @Column(name = "price")
     private BigDecimal price;
 
     public Image() {
@@ -65,13 +81,14 @@ public class Image implements File {
         this.filePath = filePath;
     }
 
-//    public Users getAuthor() {
-//        return author;
-//    }
-//
-//    public void setAuthor(Users author) {
-//        this.author = author;
-//    }
+    public Users getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Users author) {
+        this.author = author;
+    }
+
 
     public String getDescription() {
         return description;
