@@ -3,6 +3,8 @@ package se.ltucoders.bothniabladetdam.entity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Images")
@@ -53,6 +55,30 @@ public class Image implements File {
 
     @Column(name = "price")
     private BigDecimal price;
+
+    @ManyToMany
+    @JoinTable(
+            name = "ImagesTags",
+            joinColumns = @JoinColumn(name = "imageId"),
+            inverseJoinColumns = @JoinColumn( name = "tagId"))
+    private List<Tag> tags;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "image",
+            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<ImageCopy> imageCopies;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "image",
+            cascade = CascadeType.ALL)
+    private List<ImageUse> imageUses;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "image",
+            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<OrderDetails> orderDetails;
 
     public Image() {
     }
@@ -168,5 +194,44 @@ public class Image implements File {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<ImageCopy> getImageCopies() {
+        return imageCopies;
+    }
+
+    public void setImageCopies(List<ImageCopy> imageCopies) {
+        this.imageCopies = imageCopies;
+    }
+
+    public List<ImageUse> getImageUses() {
+        return imageUses;
+    }
+
+    public void setImageUses(List<ImageUse> imageUses) {
+        this.imageUses = imageUses;
+    }
+
+    public List<OrderDetails> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetails> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    public void addImageUse(ImageUse theImageUse) {
+        if (imageUses == null) {
+            imageUses = new ArrayList<>();
+        }
+        imageUses.add(theImageUse);
     }
 }
