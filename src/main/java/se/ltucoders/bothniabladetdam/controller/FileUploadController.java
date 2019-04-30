@@ -58,8 +58,8 @@ public class FileUploadController {
 
             Image image = new Image();
 
-            Users user = SOMEDATABASEOBJECT.getAuthorByName(author);
-            image.setAuthor(user);
+//***********Users user = SomeObjectToTheDB.getAuthorByName(author);
+//***********image.setAuthor(user);
 
             image.setFileName(fileName);
             image.setFilePath(fileDownloadUri);
@@ -73,4 +73,6 @@ public class FileUploadController {
         }
         return new ResponseEntity<>("The image has been uploaded!", HttpStatus.CREATED);
     }
+
+
 }
