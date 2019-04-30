@@ -1,11 +1,18 @@
-package se.ltucoders.bothniabladetdam.entity;
+package se.ltucoders.bothniabladetdam.db.entity;
+
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Images")
+@Indexed
 public class Image implements File {
 
     @Id
@@ -22,8 +29,10 @@ public class Image implements File {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "author")
+    @IndexedEmbedded
     private Users author;
 
+    @Field
     @Column(name = "description")
     private String description;
 
@@ -33,26 +42,58 @@ public class Image implements File {
     @Column(name = "fileSize")
     private String fileSize;
 
+    @Field
     @Column(name = "dateTime")
     private LocalDateTime dateTime;
 
+    @Field
     @Column(name = "make")
     private String make;
 
+    @Field
     @Column(name = "model")
     private String model;
 
+    @Field
     @Column(name = "location")
     private String location;
 
+    @Field
     @Column(name = "licenseType")
     private String licenseType;
 
+    @Field
     @Column(name = "noOfAllowedUses")
     private int noOfAllowedUses;
 
+    @Field
     @Column(name = "price")
     private BigDecimal price;
+
+    @ManyToMany
+    @JoinTable(
+            name = "ImagesTags",
+            joinColumns = @JoinColumn(name = "imageId"),
+            inverseJoinColumns = @JoinColumn( name = "tagId"))
+    @IndexedEmbedded
+    private List<Tag> tags;
+
+    @OneToMany(fetch = FetchType.EAGER,
+            mappedBy = "image",
+            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<ImageCopy> imageCopies;
+
+    @OneToMany(fetch = FetchType.EAGER,
+            mappedBy = "image",
+            cascade = CascadeType.ALL)
+    private List<ImageUse> imageUses;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "image",
+            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<OrderDetails> orderDetails;
 
     public Image() {
     }
@@ -168,5 +209,44 @@ public class Image implements File {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<ImageCopy> getImageCopies() {
+        return imageCopies;
+    }
+
+    public void setImageCopies(List<ImageCopy> imageCopies) {
+        this.imageCopies = imageCopies;
+    }
+
+    public List<ImageUse> getImageUses() {
+        return imageUses;
+    }
+
+    public void setImageUses(List<ImageUse> imageUses) {
+        this.imageUses = imageUses;
+    }
+
+    public List<OrderDetails> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetails> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    public void addImageUse(ImageUse theImageUse) {
+        if (imageUses == null) {
+            imageUses = new ArrayList<>();
+        }
+        imageUses.add(theImageUse);
     }
 }

@@ -1,4 +1,4 @@
-package se.ltucoders.bothniabladetdam.entity;
+package se.ltucoders.bothniabladetdam.db.entity;
 
 import javax.persistence.*;
 import java.util.List;
@@ -40,6 +40,18 @@ public class Users {
             cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     private List<Image> images;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "user",
+            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<Orders> orders;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "modifiedBy",
+            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<ImageCopy> imageCopies;
 
 
     public Users() {
@@ -115,5 +127,29 @@ public class Users {
 
     public void setPasswordSalt(String passwordSalt) {
         this.passwordSalt = passwordSalt;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
+
+    public List<Orders> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Orders> orders) {
+        this.orders = orders;
+    }
+
+    public List<ImageCopy> getImageCopies() {
+        return imageCopies;
+    }
+
+    public void setImageCopies(List<ImageCopy> imageCopies) {
+        this.imageCopies = imageCopies;
     }
 }
