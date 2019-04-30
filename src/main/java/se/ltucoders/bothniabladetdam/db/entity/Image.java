@@ -1,4 +1,8 @@
-package se.ltucoders.bothniabladetdam.entity;
+package se.ltucoders.bothniabladetdam.db.entity;
+
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -8,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Images")
+@Indexed
 public class Image implements File {
 
     @Id
@@ -24,8 +29,10 @@ public class Image implements File {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "author")
+    @IndexedEmbedded
     private Users author;
 
+    @Field
     @Column(name = "description")
     private String description;
 
@@ -35,24 +42,31 @@ public class Image implements File {
     @Column(name = "fileSize")
     private String fileSize;
 
+    @Field
     @Column(name = "dateTime")
     private LocalDateTime dateTime;
 
+    @Field
     @Column(name = "make")
     private String make;
 
+    @Field
     @Column(name = "model")
     private String model;
 
+    @Field
     @Column(name = "location")
     private String location;
 
+    @Field
     @Column(name = "licenseType")
     private String licenseType;
 
+    @Field
     @Column(name = "noOfAllowedUses")
     private int noOfAllowedUses;
 
+    @Field
     @Column(name = "price")
     private BigDecimal price;
 
@@ -61,15 +75,16 @@ public class Image implements File {
             name = "ImagesTags",
             joinColumns = @JoinColumn(name = "imageId"),
             inverseJoinColumns = @JoinColumn( name = "tagId"))
+    @IndexedEmbedded
     private List<Tag> tags;
 
-    @OneToMany(fetch = FetchType.LAZY,
+    @OneToMany(fetch = FetchType.EAGER,
             mappedBy = "image",
             cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
     private List<ImageCopy> imageCopies;
 
-    @OneToMany(fetch = FetchType.LAZY,
+    @OneToMany(fetch = FetchType.EAGER,
             mappedBy = "image",
             cascade = CascadeType.ALL)
     private List<ImageUse> imageUses;

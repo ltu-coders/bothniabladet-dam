@@ -1,4 +1,4 @@
-package se.ltucoders.bothniabladetdam.entity;
+package se.ltucoders.bothniabladetdam.db.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
