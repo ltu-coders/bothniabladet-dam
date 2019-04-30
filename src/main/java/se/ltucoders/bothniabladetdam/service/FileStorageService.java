@@ -34,7 +34,7 @@ public class FileStorageService {
     }
 
     // Stores file in the repository
-    public void storeFile(MultipartFile file) {
+    public boolean storeFile(MultipartFile file) {
         // Normalize file name
         // https://docs.oracle.com/javase/tutorial/essential/io/pathOps.html
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -44,8 +44,11 @@ public class FileStorageService {
             Path targetLocation = this.storageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", e);
+            // Exception login can be here
+
+            return false;
         }
+        return true;
     }
 
     public Resource loadFileAsResource(String fileName) {
