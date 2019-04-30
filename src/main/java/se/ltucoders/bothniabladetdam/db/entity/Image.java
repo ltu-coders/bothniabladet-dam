@@ -78,11 +78,11 @@ public class Image implements File {
     @IndexedEmbedded
     private List<Tag> tags;
 
-    @OneToMany(fetch = FetchType.EAGER,
-            mappedBy = "image",
-            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
-    private List<ImageCopy> imageCopies;
+//    @OneToMany(fetch = FetchType.EAGER,
+//            mappedBy = "image",
+//            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+//                    CascadeType.DETACH, CascadeType.REFRESH})
+//    private List<ImageCopy> imageCopies;
 
     @OneToMany(fetch = FetchType.EAGER,
             mappedBy = "image",
@@ -219,13 +219,13 @@ public class Image implements File {
         this.tags = tags;
     }
 
-    public List<ImageCopy> getImageCopies() {
-        return imageCopies;
-    }
-
-    public void setImageCopies(List<ImageCopy> imageCopies) {
-        this.imageCopies = imageCopies;
-    }
+//    public List<ImageCopy> getImageCopies() {
+//        return imageCopies;
+//    }
+//
+//    public void setImageCopies(List<ImageCopy> imageCopies) {
+//        this.imageCopies = imageCopies;
+//    }
 
     public List<ImageUse> getImageUses() {
         return imageUses;
