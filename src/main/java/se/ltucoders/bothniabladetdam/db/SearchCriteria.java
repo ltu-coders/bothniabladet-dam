@@ -4,10 +4,13 @@ import java.time.LocalDateTime;
 
 public class SearchCriteria {
     private String[] tags;
-    private int imageId;
     private String licenseType;
     private int author;
     private String resolution; //Not currently used
+    private int maxWidth;
+    private int minWidth;
+    private int maxHeight;
+    private int minHeight;
     private LocalDateTime fromDate;
     private LocalDateTime toDate;
     private String editor; //Not currently used
@@ -19,10 +22,13 @@ public class SearchCriteria {
     }
 
     public SearchCriteria(String[] tags,
-                          int imageId,
                           String licenseType,
                           int author,
                           String resolution,
+                          int maxWidth,
+                          int minWidth,
+                          int maxHeight,
+                          int minHeight,
                           LocalDateTime fromDate,
                           LocalDateTime toDate,
                           String editor,
@@ -30,10 +36,11 @@ public class SearchCriteria {
                           String make,
                           String model) {
         this.tags = tags;
-        this.imageId = imageId;
         this.licenseType = licenseType;
         this.author = author;
         this.resolution = resolution;
+        this.maxWidth = maxWidth;
+        this.maxHeight = maxHeight;
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.editor = editor;
@@ -42,20 +49,19 @@ public class SearchCriteria {
         this.model = model;
     }
 
+    public SearchCriteria(String[] tags, int author, LocalDateTime fromDate, LocalDateTime toDate) {
+        this.tags = tags;
+        this.author = author;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+    }
+
     public String[] getTags() {
         return tags;
     }
 
     public void setTags(String[] tags) {
         this.tags = tags;
-    }
-
-    public int getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
     }
 
     public String getLicenseType() {
@@ -74,13 +80,45 @@ public class SearchCriteria {
         this.author = author;
     }
 
-//    public String getResolution() {
-//        return resolution;
-//    }
-//
-//    public void setResolution(String resolution) {
-//        this.resolution = resolution;
-//    }
+    public String getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
+    }
+
+    public int getMaxWidth() {
+        return maxWidth;
+    }
+
+    public void setMaxWidth(int maxWidth) {
+        this.maxWidth = maxWidth;
+    }
+
+    public int getMinWidth() {
+        return minWidth;
+    }
+
+    public void setMinWidth(int minWidth) {
+        this.minWidth = minWidth;
+    }
+
+    public int getMaxHeight() {
+        return maxHeight;
+    }
+
+    public int getMinHeight() {
+        return minHeight;
+    }
+
+    public void setMinHeight(int minHeight) {
+        this.minHeight = minHeight;
+    }
+
+    public void setMaxHeight(int maxHeight) {
+        this.maxHeight = maxHeight;
+    }
 
     public LocalDateTime getFromDate() {
         return fromDate;
@@ -98,21 +136,21 @@ public class SearchCriteria {
         this.toDate = toDate;
     }
 
-//    public String getEditor() {
-//        return editor;
-//    }
-//
-//    public void setEditor(String editor) {
-//        this.editor = editor;
-//    }
-//
-//    public String getLastModified() {
-//        return lastModified;
-//    }
-//
-//    public void setLastModified(String lastModified) {
-//        this.lastModified = lastModified;
-//    }
+    public String getEditor() {
+        return editor;
+    }
+
+    public void setEditor(String editor) {
+        this.editor = editor;
+    }
+
+    public String getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(String lastModified) {
+        this.lastModified = lastModified;
+    }
 
     public String getMake() {
         return make;

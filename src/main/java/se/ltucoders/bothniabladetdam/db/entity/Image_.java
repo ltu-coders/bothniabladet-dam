@@ -21,6 +21,8 @@ public abstract class Image_ {
     public static volatile SingularAttribute<Image, Users> author;
     public static volatile SingularAttribute<Image, String> description;
     public static volatile SingularAttribute<Image, String> resolution;
+    public static volatile SingularAttribute<Image, String> width;
+    public static volatile SingularAttribute<Image, String> height;
     public static volatile SingularAttribute<Image, String> fileSize;
     public static volatile SingularAttribute<Image, LocalDateTime> dateTime;
     public static volatile SingularAttribute<Image, String> make;
@@ -40,6 +42,8 @@ public abstract class Image_ {
     public static final String FILE_PATH = "filePath";
     public static final String AUTHOR = "author";
     public static final String DESCRIPTION = "description";
+    public static final String WIDTH = "width";
+    public static final String HEIGHT = "height";
     public static final String RESOLUTION = "resolution";
     public static final String FILE_SIZE = "fileSize";
     public static final String DATE_TIME = "dateTime";
