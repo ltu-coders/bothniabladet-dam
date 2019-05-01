@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.ltucoders.bothniabladetdam.db.entity.Image;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,6 +22,7 @@ import java.util.List;
 @Repository
 public class ImageRepository {
 
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
@@ -32,8 +34,8 @@ public class ImageRepository {
     public List<Image> findAll(){
 
         List<Image> images = null;
-        try (Session session = entityManager.unwrap(Session.class)) {
-
+        Session session = entityManager.unwrap(Session.class);
+        try  {
             Query query = session.createQuery("from Image");
             images = query.getResultList();
 
@@ -46,7 +48,8 @@ public class ImageRepository {
     @Transactional
     public List<Image> findByKeyword(String [] tags) {
         List<Image> images = null;
-        try (Session session = entityManager.unwrap(Session.class)){
+        Session session = entityManager.unwrap(Session.class);
+        try {
             String hql = "select distinct i from Image i " +
                     "join i.tags t " +
                     "where t.tagName in (:tags)";
@@ -61,8 +64,9 @@ public class ImageRepository {
 
     @Transactional
     public Image findById(int theId) {
-        Image imageToReturn = null;
-        try (Session session = entityManager.unwrap(Session.class)){
+        Image imageToReturn = new Image();
+        Session session = entityManager.unwrap(Session.class);
+        try {
             imageToReturn = session.get(Image.class, theId);
             imageToReturn.getAuthor();
         } catch (HibernateException ex) {
@@ -73,8 +77,8 @@ public class ImageRepository {
 
     @Transactional
     public Image save(Image theImage) {
-
-        try (Session session = entityManager.unwrap(Session.class)) {
+        Session session = entityManager.unwrap(Session.class);
+        try {
             session.save(theImage);
         } catch (HibernateException ex) {
             ex.printStackTrace();
@@ -83,8 +87,8 @@ public class ImageRepository {
     }
     @Transactional
     public List<Image> search(SearchCriteria searchCriteria) {
-
-        try (Session session = entityManager.unwrap(Session.class)){
+        Session session = entityManager.unwrap(Session.class);
+        try {
             String sql = "select distinct it.imageId from ImagesTags it " +
                     "inner join Tags t " +
                     "where t.tagId = it.tagId AND (t.tagName IN :tags)";

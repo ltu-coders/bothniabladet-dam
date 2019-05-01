@@ -8,11 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import se.ltucoders.bothniabladetdam.db.entity.Users;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 @Repository
 public class UsersRepository {
 
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
@@ -22,18 +24,21 @@ public class UsersRepository {
 
     @Transactional
     public Users getUserByUsername(String theUsername){
-
-        try (Session session = entityManager.unwrap(Session.class)){
+        Session session = entityManager.unwrap(Session.class);
+        try {
             Query query = session.createQuery("from Users where userName =:userName");
             query.setParameter("userName", theUsername);
             return (Users) ((org.hibernate.query.Query) query).uniqueResult();
+        } catch (HibernateException hex) {
+            hex.printStackTrace();
         }
+        return null;
     }
 
     @Transactional
     public Users getUserById(int theId) {
-
-        try (Session session = entityManager.unwrap(Session.class)){
+        Session session = entityManager.unwrap(Session.class);
+        try {
             return session.get(Users.class, theId);
         } catch (HibernateException hex) {
             hex.printStackTrace();

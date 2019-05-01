@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import se.ltucoders.bothniabladetdam.db.ImageRepository;
 import se.ltucoders.bothniabladetdam.db.entity.Image;
-import se.ltucoders.bothniabladetdam.util.SearchCriteria;
+import se.ltucoders.bothniabladetdam.db.SearchCriteria;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +29,8 @@ public class ImageController {
 
     @GetMapping(params = "searchCriteria")
     public List<Image> search(@RequestParam(value = "searchCriteria") SearchCriteria searchCriteria) {
-        // TODO: Not implemented
-        return new ArrayList<>();
+
+        return imageRepository.search(searchCriteria);
     }
 
 
