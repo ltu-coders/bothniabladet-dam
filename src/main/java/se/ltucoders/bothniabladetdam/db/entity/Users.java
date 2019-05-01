@@ -1,5 +1,7 @@
 package se.ltucoders.bothniabladetdam.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -39,19 +41,21 @@ public class Users {
             mappedBy = "author",
             cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonBackReference
     private List<Image> images;
 
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "user",
             cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonBackReference
     private List<Orders> orders;
 
-//    @OneToMany(fetch = FetchType.LAZY,
-//            mappedBy = "modifiedBy",
-//            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
-//                    CascadeType.DETACH, CascadeType.REFRESH})
-//    private List<ImageCopy> imageCopies;
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "modifiedBy",
+            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<ImageCopy> imageCopies;
 
 
     public Users() {
