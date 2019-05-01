@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Images")
@@ -26,7 +27,7 @@ public class Image implements File {
     @Column(name = "filePath")
     private String filePath;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "author")
     @IndexedEmbedded
@@ -75,8 +76,7 @@ public class Image implements File {
             name = "ImagesTags",
             joinColumns = @JoinColumn(name = "imageId"),
             inverseJoinColumns = @JoinColumn( name = "tagId"))
-    @IndexedEmbedded
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
     @OneToMany(fetch = FetchType.EAGER,
             mappedBy = "image",
@@ -84,7 +84,7 @@ public class Image implements File {
                     CascadeType.DETACH, CascadeType.REFRESH})
     private List<ImageCopy> imageCopies;
 
-    @OneToMany(fetch = FetchType.EAGER,
+    @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "image",
             cascade = CascadeType.ALL)
     private List<ImageUse> imageUses;
@@ -211,11 +211,11 @@ public class Image implements File {
         this.price = price;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
