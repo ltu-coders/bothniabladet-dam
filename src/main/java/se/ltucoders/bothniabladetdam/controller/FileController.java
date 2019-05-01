@@ -2,7 +2,6 @@ package se.ltucoders.bothniabladetdam.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import se.ltucoders.bothniabladetdam.exception.FileStorageException;
 import se.ltucoders.bothniabladetdam.property.FileContentTypeProperties;
 
 @Controller
