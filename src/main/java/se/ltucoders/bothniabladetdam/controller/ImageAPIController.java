@@ -8,17 +8,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import se.ltucoders.bothniabladetdam.entity.Image;
-import se.ltucoders.bothniabladetdam.entity.Users;
 import se.ltucoders.bothniabladetdam.service.FileStorageService;
 
 @RestController
-public class FileUploadController {
+public class ImageAPIController {
 
     private FileStorageService fileStorageService;
     private FileController fileController;
 
     @Autowired
-    public FileUploadController(FileStorageService fileStorageService, FileController fileController) {
+    public ImageAPIController(FileStorageService fileStorageService, FileController fileController) {
         this.fileStorageService = fileStorageService;
         this.fileController = fileController;
     }
@@ -73,6 +72,4 @@ public class FileUploadController {
         }
         return new ResponseEntity<>("The image has been uploaded!", HttpStatus.CREATED);
     }
-
-
 }
