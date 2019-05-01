@@ -4,6 +4,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Tags")
@@ -23,7 +24,7 @@ public class Tag {
             name = "ImagesTags",
             joinColumns = @JoinColumn(name = "tagId"),
             inverseJoinColumns = @JoinColumn( name = "imageId"))
-    private List<Image> images;
+    private Set<Image> images;
 
     public Tag() {
     }
@@ -44,11 +45,11 @@ public class Tag {
         this.tagName = tagName;
     }
 
-    public List<Image> getImages() {
+    public Set<Image> getImages() {
         return images;
     }
 
-    public void setImages(List<Image> images) {
+    public void setImages(Set<Image> images) {
         this.images = images;
     }
 }
