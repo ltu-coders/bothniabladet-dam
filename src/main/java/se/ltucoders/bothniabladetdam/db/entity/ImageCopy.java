@@ -1,5 +1,7 @@
 package se.ltucoders.bothniabladetdam.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -15,11 +17,13 @@ public class ImageCopy {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "imageId")
+    @JsonBackReference
     private Image image;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "modifiedBy")
+    @JsonBackReference
     private Users modifiedBy;
 
     @Column(name = "dateTime")

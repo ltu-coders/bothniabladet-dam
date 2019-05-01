@@ -1,5 +1,7 @@
 package se.ltucoders.bothniabladetdam.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -26,6 +28,7 @@ public class ImageUse {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "imageId")
+    @JsonBackReference
     private Image image;
 
     public ImageUse() {
