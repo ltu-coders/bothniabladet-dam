@@ -1,5 +1,6 @@
 package se.ltucoders.bothniabladetdam.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
@@ -19,11 +20,12 @@ public class Tag {
     @Column(name = "tagName")
     private String tagName;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "ImagesTags",
             joinColumns = @JoinColumn(name = "tagId"),
             inverseJoinColumns = @JoinColumn( name = "imageId"))
+    @JsonBackReference
     private Set<Image> images;
 
     public Tag() {

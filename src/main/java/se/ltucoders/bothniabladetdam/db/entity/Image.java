@@ -1,5 +1,6 @@
 package se.ltucoders.bothniabladetdam.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -27,10 +28,9 @@ public class Image implements File {
     @Column(name = "filePath")
     private String filePath;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "author")
-    @IndexedEmbedded
     private Users author;
 
     @Field
@@ -39,6 +39,12 @@ public class Image implements File {
 
     @Column(name = "resolution")
     private String resolution;
+
+    @Column(name = "width")
+    private int width;
+
+    @Column(name = "height")
+    private int height;
 
     @Column(name = "fileSize")
     private String fileSize;
@@ -71,28 +77,31 @@ public class Image implements File {
     @Column(name = "price")
     private BigDecimal price;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "ImagesTags",
             joinColumns = @JoinColumn(name = "imageId"),
             inverseJoinColumns = @JoinColumn( name = "tagId"))
     private Set<Tag> tags;
 
-//    @OneToMany(fetch = FetchType.EAGER,
-//            mappedBy = "image",
-//            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
-//                    CascadeType.DETACH, CascadeType.REFRESH})
-//    private List<ImageCopy> imageCopies;
+    @OneToMany(fetch = FetchType.EAGER,
+            mappedBy = "image",
+            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonBackReference
+    private List<ImageCopy> imageCopies;
 
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "image",
             cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<ImageUse> imageUses;
 
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "image",
             cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonBackReference
     private List<OrderDetails> orderDetails;
 
     public Image() {
@@ -130,7 +139,6 @@ public class Image implements File {
         this.author = author;
     }
 
-
     public String getDescription() {
         return description;
     }
@@ -145,6 +153,22 @@ public class Image implements File {
 
     public void setResolution(String resolution) {
         this.resolution = resolution;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public String getFileSize() {
@@ -219,13 +243,13 @@ public class Image implements File {
         this.tags = tags;
     }
 
-//    public List<ImageCopy> getImageCopies() {
-//        return imageCopies;
-//    }
-//
-//    public void setImageCopies(List<ImageCopy> imageCopies) {
-//        this.imageCopies = imageCopies;
-//    }
+    public List<ImageCopy> getImageCopies() {
+        return imageCopies;
+    }
+
+    public void setImageCopies(List<ImageCopy> imageCopies) {
+        this.imageCopies = imageCopies;
+    }
 
     public List<ImageUse> getImageUses() {
         return imageUses;

@@ -60,6 +60,7 @@ public class ImageRepository {
         Image imageToReturn = null;
         try (Session session = entityManager.unwrap(Session.class)){
             imageToReturn = session.get(Image.class, theId);
+            imageToReturn.getAuthor();
         } catch (HibernateException ex) {
             ex.printStackTrace();
         }
