@@ -47,11 +47,11 @@ public class Users {
                     CascadeType.DETACH, CascadeType.REFRESH})
     private List<Orders> orders;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "modifiedBy",
-            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
-    private List<ImageCopy> imageCopies;
+//    @OneToMany(fetch = FetchType.LAZY,
+//            mappedBy = "modifiedBy",
+//            cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
+//                    CascadeType.DETACH, CascadeType.REFRESH})
+//    private List<ImageCopy> imageCopies;
 
 
     public Users() {
@@ -145,11 +145,11 @@ public class Users {
         this.orders = orders;
     }
 
-    public List<ImageCopy> getImageCopies() {
-        return imageCopies;
-    }
-
-    public void setImageCopies(List<ImageCopy> imageCopies) {
-        this.imageCopies = imageCopies;
-    }
+//    public List<ImageCopy> getImageCopies() {
+//        return imageCopies;
+//    }
+//
+//    public void setImageCopies(List<ImageCopy> imageCopies) {
+//        this.imageCopies = imageCopies;
+//    }
 }
