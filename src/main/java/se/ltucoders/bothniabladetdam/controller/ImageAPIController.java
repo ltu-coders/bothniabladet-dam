@@ -72,4 +72,11 @@ public class ImageAPIController {
         }
         return new ResponseEntity<>("The image has been uploaded!", HttpStatus.CREATED);
     }
+
+    @PutMapping("/image")
+    public ResponseEntity test(@RequestBody Image image) {
+//******SomeObjectToTheDB someObjectToTheDB = new SomeObjectToTheDB().getAuthorByName(author);
+//******someObjectToTheDB.changeImage(image);
+        return new ResponseEntity<>("Information about image has been changed!", HttpStatus.OK);
+    }
 }
