@@ -28,7 +28,7 @@ public class Image implements File {
     @Column(name = "filePath")
     private String filePath;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "author")
     private Users author;
@@ -88,8 +88,13 @@ public class Image implements File {
             mappedBy = "image",
             cascade =   {CascadeType.PERSIST, CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<ImageCopy> imageCopies;
+
+    @OneToOne(mappedBy = "newImage",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
     @JsonBackReference
-    private List<ImageCopy> imageCopies;
+    private ImageCopy imageCopy;
 
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "image",
@@ -243,11 +248,11 @@ public class Image implements File {
         this.tags = tags;
     }
 
-    public List<ImageCopy> getImageCopies() {
+    public Set<ImageCopy> getImageCopies() {
         return imageCopies;
     }
 
-    public void setImageCopies(List<ImageCopy> imageCopies) {
+    public void setImageCopies(Set<ImageCopy> imageCopies) {
         this.imageCopies = imageCopies;
     }
 
