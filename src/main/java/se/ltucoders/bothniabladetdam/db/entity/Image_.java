@@ -32,7 +32,7 @@ public abstract class Image_ {
     public static volatile SingularAttribute<Image, Integer> noOfAllowedUses;
     public static volatile SingularAttribute<Image, BigDecimal> price;
     public static volatile SetAttribute<Image, Set> tags;
-    public static volatile ListAttribute<Image, List> imageCopies;
+    public static volatile SetAttribute<Image, List> imageCopies;
     public static volatile ListAttribute<Image, List> imageUses;
     public static volatile ListAttribute<Image, List> orderDetails;
 

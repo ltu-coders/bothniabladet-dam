@@ -20,6 +20,24 @@ public class ImageCopy {
     @JsonBackReference
     private Image image;
 
+    @Column(insertable = false, updatable = false)
+    @Transient
+    private int originalImageId;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "newImageId")
+    @JsonBackReference
+    private Image newImage;
+
+    @Transient
+    private String filePath;
+
+    @Transient
+    private int modifiedById;
+
+    @Transient
+    private String fileName;
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "modifiedBy")
@@ -58,6 +76,46 @@ public class ImageCopy {
         this.image = image;
     }
 
+    public Image getNewImage() {
+        return newImage;
+    }
+
+    public void setNewImage(Image newImage) {
+        this.newImage = newImage;
+    }
+
+    public int getOriginalImageId() {
+        return originalImageId;
+    }
+
+    public void setOriginalImageId(int originalImageId) {
+        this.originalImageId = originalImageId;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public int getModifiedById() {
+        return modifiedById;
+    }
+
+    public void setModifiedById(int modifiedById) {
+        this.modifiedById = modifiedById;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public Users getModifiedBy() {
         return modifiedBy;
     }
@@ -80,5 +138,14 @@ public class ImageCopy {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    @PostLoad
+    protected void initFields(){
+        this.originalImageId = image.getImageId();
+        this.fileName = newImage.getFileName();
+        this.filePath = newImage.getFilePath();
+        this.modifiedById = newImage.getAuthor().getUserId();
     }
 }
