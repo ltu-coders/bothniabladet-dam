@@ -1,7 +1,10 @@
 package se.ltucoders.bothniabladetdam.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +14,11 @@ import se.ltucoders.bothniabladetdam.db.ImageRepository;
 import se.ltucoders.bothniabladetdam.db.UsersRepository;
 import se.ltucoders.bothniabladetdam.db.entity.Image;
 import se.ltucoders.bothniabladetdam.service.FileStorageService;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @RestController
 public class ImageAPIController {
@@ -47,7 +55,7 @@ public class ImageAPIController {
                         " contains invalid character or " + "sequence of characters!",
                         HttpStatus.BAD_REQUEST);
             }
-            if (!fileController.controlEmptySubmission(file.getContentType())) {
+            if (!fileController.controlEmptySubmission(file)) {
                 return new ResponseEntity<>("Sorry! You have to upload at least one image!",
                         HttpStatus.BAD_REQUEST);
             }
@@ -64,13 +72,36 @@ public class ImageAPIController {
             image = new Image();
 //**********metadataExtractor = new MetaDataService(image, file);
 
+//            image.setAuthor(usersRepository.getUserByUsername(author));
+//            image.setFileName(fileName);
+//            image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
+//                    .path("/image/")
+//                    .path(fileName)
+//                    .toUriString());
+//            image.setLicenseType(licenseType);
+//            imageRepository.save(image);
+
+            //Test object
             image.setAuthor(usersRepository.getUserByUsername(author));
             image.setFileName(fileName);
             image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/downloadFile/")
+                    .path("/image/")
                     .path(fileName)
                     .toUriString());
             image.setLicenseType(licenseType);
+            image.setDescription("Description");
+            image.setResolution("Resolution");
+            image.setWidth(0);
+            image.setHeight(0);
+            image.setFileSize("File size");
+            image.setDateTime(LocalDateTime.now());
+            image.setMake("Canon");
+            image.setModel("700p");
+            image.setLocation("Luleå");
+            image.setLicenseType("License type");
+            image.setNoOfAllowedUses(12);
+            image.setPrice(new BigDecimal(222));
+
             imageRepository.save(image);
 
         }
@@ -93,5 +124,20 @@ public class ImageAPIController {
     public ResponseEntity deleteImage(@RequestBody Image image) {
 //        imageRepository.delete(image);
         return new ResponseEntity<>("Image's information has been changed!", HttpStatus.OK);
+    }
+
+    //
+    @GetMapping("/image/{fileName:.+}")
+    public ResponseEntity downloadFile(@PathVariable String fileName, HttpServletRequest request) throws IOException {
+        // Load file as Resource
+        Resource resource = fileStorageService.loadFileAsResource(fileName);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(request.getServletContext()
+                        .getMimeType(resource.getFile()
+                        .getAbsolutePath())))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
 }

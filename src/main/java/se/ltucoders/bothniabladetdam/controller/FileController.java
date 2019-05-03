@@ -2,7 +2,10 @@ package se.ltucoders.bothniabladetdam.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartFile;
 import se.ltucoders.bothniabladetdam.property.FileContentTypeProperties;
+
+import java.io.IOException;
 
 @Controller
 public class FileController {
@@ -21,11 +24,10 @@ public class FileController {
     }
 
     // Checks if file content type is an empty stream
-    boolean controlEmptySubmission(String fileContentType) {
-        if(fileContentType == null) {
-            return false;
-        }
-        return (!fileContentType.equals(fileContentTypeProperties.getEmptyStream()));
+    boolean controlEmptySubmission(MultipartFile file) {
+        return (file.getContentType() != null ||
+                !file.isEmpty() ||
+                !file.getContentType().equals(fileContentTypeProperties.getEmptyStream()));
     }
 
     // Checks if a file format corresponds to one of the predefined types
