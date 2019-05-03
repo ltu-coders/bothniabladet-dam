@@ -90,12 +90,6 @@ public class Image implements File {
                     CascadeType.DETACH, CascadeType.REFRESH})
     private Set<ImageCopy> imageCopies;
 
-    @OneToOne(mappedBy = "newImage",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
-    @JsonBackReference
-    private ImageCopy imageCopy;
-
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "image",
             cascade = CascadeType.ALL)

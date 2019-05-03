@@ -16,7 +16,7 @@ public class ImageCopy {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "imageId")
+    @JoinColumn(name = "originalImageId")
     @JsonBackReference
     private Image image;
 
@@ -24,7 +24,7 @@ public class ImageCopy {
     @Transient
     private int originalImageId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "newImageId")
     @JsonBackReference
     private Image newImage;
@@ -143,9 +143,15 @@ public class ImageCopy {
 
     @PostLoad
     protected void initFields(){
-        this.originalImageId = image.getImageId();
-        this.fileName = newImage.getFileName();
-        this.filePath = newImage.getFilePath();
-        this.modifiedById = newImage.getAuthor().getUserId();
+
+        if (image != null) {
+            this.originalImageId = image.getImageId();
+        }
+        if (newImage != null) {
+            this.fileName = newImage.getFileName();
+            this.filePath = newImage.getFilePath();
+            this.modifiedById = newImage.getAuthor().getUserId();
+        }
+
     }
 }
