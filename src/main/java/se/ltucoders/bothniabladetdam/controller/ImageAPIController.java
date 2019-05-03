@@ -7,19 +7,32 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import se.ltucoders.bothniabladetdam.db.ImageRepository;
+import se.ltucoders.bothniabladetdam.db.UsersRepository;
 import se.ltucoders.bothniabladetdam.db.entity.Image;
+import se.ltucoders.bothniabladetdam.db.entity.Users;
 import se.ltucoders.bothniabladetdam.service.FileStorageService;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @RestController
 public class ImageAPIController {
 
     private FileStorageService fileStorageService;
     private FileController fileController;
+    private UsersRepository usersRepository;
+    private ImageRepository imageRepository;
 
     @Autowired
-    public ImageAPIController(FileStorageService fileStorageService, FileController fileController) {
+    public ImageAPIController(FileStorageService fileStorageService,
+                              FileController fileController,
+                              ImageRepository imageRepository,
+                              UsersRepository usersRepository) {
         this.fileStorageService = fileStorageService;
         this.fileController = fileController;
+        this.imageRepository = imageRepository;
+        this.usersRepository = usersRepository;
     }
 
     // Controls names and content-types for files and store them in the repository
@@ -55,16 +68,24 @@ public class ImageAPIController {
                     .path(fileName)
                     .toUriString();
 
+            Users user = usersRepository.getUserById(1);
             Image image = new Image();
 
-//***********Users user = SomeObjectToTheDB.getAuthorByName(author);
-//***********image.setAuthor(user);
+            image.setFileName("filett");
+            image.setFilePath("/dir");
+            image.setAuthor(user);
+            image.setDescription("En till beskrivning");
+            image.setResolution("2000*1000");
+            image.setFileSize("2872772");
+            image.setDateTime(LocalDateTime.now());
+            image.setMake("Sony");
+            image.setModel("Alpha");
+            image.setLocation("Gammelstad");
+            image.setLicenseType("extern");
+            image.setNoOfAllowedUses(5);
+            image.setPrice(new BigDecimal("1000"));
 
-            image.setFileName(fileName);
-            image.setFilePath(fileDownloadUri);
-            image.setLicenseType(licenseType);
-
-            //****HERE SHOULD BE AN OBJECT WITH METHOD THAT STORES IMAGE INFORMATION TO THE DB***//
+            imageRepository.save(image);
         }
 
         if (files.length > 1) {
