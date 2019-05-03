@@ -1,6 +1,5 @@
 package se.ltucoders.bothniabladetdam.controller;
 
-import antlr.collections.impl.LList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,6 +27,7 @@ public class ImageAPIController {
     private FileController fileController;
     private ImageRepository imageRepository;
     private UsersRepository usersRepository;
+
 
     @Autowired
     public ImageAPIController(FileStorageService fileStorageService, FileController fileController,
@@ -84,6 +83,7 @@ public class ImageAPIController {
         return imageRepository.search(searchCriteria);
     }
 
+
     // Converts string with search tags to array with tags. Uses comma as tag separator.
     private String[] getTagArray(String tagString) {
         String[] tags;
@@ -96,6 +96,7 @@ public class ImageAPIController {
         }
         return new String[0];
     }
+
 
     // Converts string date (format: 2018-09-22) to LocalDateTime.
     private LocalDateTime parseStringDate(String dateString) {
@@ -112,12 +113,12 @@ public class ImageAPIController {
                 date = LocalDateTime.parse(dateString, formatter);
                 System.out.println("The date is: " + date);
             }
-
         } catch (DateTimeParseException ex) {
             System.out.println("The date can not be parsed. Enter valid date!");
         }
         return date;
     }
+
 
     // TODO: not a good idea to change user input. Better to use String
     // Converts string number to integer.
