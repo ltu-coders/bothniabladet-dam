@@ -10,25 +10,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import se.ltucoders.bothniabladetdam.db.ImageRepository;
 import se.ltucoders.bothniabladetdam.db.UsersRepository;
 import se.ltucoders.bothniabladetdam.db.entity.Image;
-import se.ltucoders.bothniabladetdam.db.entity.Users;
 import se.ltucoders.bothniabladetdam.service.FileStorageService;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @RestController
 public class ImageAPIController {
 
     private FileStorageService fileStorageService;
     private FileController fileController;
-    private UsersRepository usersRepository;
     private ImageRepository imageRepository;
+    private UsersRepository usersRepository;
 
     @Autowired
-    public ImageAPIController(FileStorageService fileStorageService,
-                              FileController fileController,
-                              ImageRepository imageRepository,
-                              UsersRepository usersRepository) {
+    public ImageAPIController(FileStorageService fileStorageService, FileController fileController,
+                              ImageRepository imageRepository, UsersRepository usersRepository) {
         this.fileStorageService = fileStorageService;
         this.fileController = fileController;
         this.imageRepository = imageRepository;
@@ -42,6 +36,10 @@ public class ImageAPIController {
                                        @RequestParam("author") String author,
                                        @RequestParam("licensetype") String licenseType) {
         for (MultipartFile file : files) {
+
+            Image image;
+//**********MetaDataService metadataExtractor;
+
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
             if (!fileController.controlName(fileName)) {
@@ -63,42 +61,37 @@ public class ImageAPIController {
                         HttpStatus.BAD_REQUEST);
             }
 
-            String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+            image = new Image();
+//**********metadataExtractor = new MetaDataService(image, file);
+
+            image.setAuthor(usersRepository.getUserByUsername(author));
+            image.setFileName(fileName);
+            image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/downloadFile/")
                     .path(fileName)
-                    .toUriString();
-
-            Users user = usersRepository.getUserById(1);
-            Image image = new Image();
-
-            image.setFileName("filett");
-            image.setFilePath("/dir");
-            image.setAuthor(user);
-            image.setDescription("En till beskrivning");
-            image.setResolution("2000*1000");
-            image.setFileSize("2872772");
-            image.setDateTime(LocalDateTime.now());
-            image.setMake("Sony");
-            image.setModel("Alpha");
-            image.setLocation("Gammelstad");
-            image.setLicenseType("extern");
-            image.setNoOfAllowedUses(5);
-            image.setPrice(new BigDecimal("1000"));
-
+                    .toUriString());
+            image.setLicenseType(licenseType);
             imageRepository.save(image);
+
         }
 
         if (files.length > 1) {
-            return new ResponseEntity<>("All images have been uploaded!", HttpStatus.CREATED);
+            return new ResponseEntity<>("All images have been saved!", HttpStatus.CREATED);
         }
-        return new ResponseEntity<>("The image has been uploaded!", HttpStatus.CREATED);
+        return new ResponseEntity<>("The image has been saved!", HttpStatus.CREATED);
     }
 
     // Changes information for an image
     @PutMapping("/image")
-    public ResponseEntity test(@RequestBody Image image) {
-//******SomeObjectToTheDB someObjectToTheDB = new SomeObjectToTheDB().getAuthorByName(author);
-//******someObjectToTheDB.changeImage(image);
-        return new ResponseEntity<>("Information about image has been changed!", HttpStatus.OK);
+    public ResponseEntity changeImageInformation(@RequestBody Image image) {
+//        imageRepository.change(image);
+        return new ResponseEntity<>("Image's information has been changed!", HttpStatus.OK);
+    }
+
+    // Changes information for an image
+    @DeleteMapping("/image")
+    public ResponseEntity deleteImage(@RequestBody Image image) {
+//        imageRepository.delete(image);
+        return new ResponseEntity<>("Image's information has been changed!", HttpStatus.OK);
     }
 }
