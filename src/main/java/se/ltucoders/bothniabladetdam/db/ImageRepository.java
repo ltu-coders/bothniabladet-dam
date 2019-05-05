@@ -7,22 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import se.ltucoders.bothniabladetdam.db.entity.Image;
+import se.ltucoders.bothniabladetdam.db.entity.Users;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@Transactional
 public class ImageRepository {
 
-    @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
@@ -30,7 +29,6 @@ public class ImageRepository {
         this.entityManager = entityManager;
     }
 
-    @Transactional
     public List<Image> findAll(){
 
         List<Image> images = null;
@@ -45,7 +43,6 @@ public class ImageRepository {
         return images;
     }
 
-    @Transactional
     public List<Image> findByKeyword(String [] tags) {
         List<Image> images = null;
         Session session = entityManager.unwrap(Session.class);
@@ -62,7 +59,6 @@ public class ImageRepository {
         return images;
     }
 
-    @Transactional
     public Image findById(int theId) {
         Image imageToReturn = new Image();
         Session session = entityManager.unwrap(Session.class);
@@ -74,17 +70,16 @@ public class ImageRepository {
         return imageToReturn;
     }
 
-    @Transactional
-    public Image save(Image theImage) {
+    public void save(Image theImage) {
         Session session = entityManager.unwrap(Session.class);
-        try {
-            session.save(theImage);
-        } catch (HibernateException ex) {
-            ex.printStackTrace();
-        }
-        return theImage;
+        session.save(theImage);
     }
-    @Transactional
+
+    public void delete(Image theImage) {
+        Session session = entityManager.unwrap(Session.class);
+        session.delete(theImage);
+    }
+
     public List<Image> search(SearchCriteria searchCriteria) {
         Session session = entityManager.unwrap(Session.class);
         try {
@@ -101,6 +96,7 @@ public class ImageRepository {
             CriteriaBuilder cBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Image> criteriaQuery = cBuilder.createQuery(Image.class);
             Root<Image> imageRoot = criteriaQuery.from(Image.class);
+            Root<Users> usersRoot = criteriaQuery.from(Users.class);
 
 
             List<Predicate> tagPredicate = new ArrayList<>();   //Holds the list of id's to be added to the OR condition
@@ -136,6 +132,8 @@ public class ImageRepository {
         } catch (HibernateException ex) {
             ex.printStackTrace();
         }
-        return null;
-    }
+
+        return new ArrayList<Image>();
+
+        }
 }
