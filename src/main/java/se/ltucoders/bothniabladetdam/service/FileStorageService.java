@@ -29,28 +29,25 @@ public class FileStorageService {
         try {
             Files.createDirectories(this.storageLocation);
         } catch (IOException e){
-            throw new FileStorageException("Could not create storage directory.", e);
+            throw new FileStorageException("Sorry! The server has problem to create storage directory!");
         }
     }
 
     // Stores file in the repository
-    public boolean storeFile(MultipartFile file) {
+    public void storeFile(MultipartFile file) {
         // Normalize file name
         // https://docs.oracle.com/javase/tutorial/essential/io/pathOps.html
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
         try {
             // Copy file to the target location. Replacing existing file with the same name.
             Path targetLocation = this.storageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            // Exception login can be here
-
-            return false;
+            throw new FileStorageException("Could not store file " + fileName + ". Please try again!");
         }
-        return true;
     }
 
+    // Uploads file to the client
     public Resource loadFileAsResource(String fileName) {
         try {
             Path filePath = this.storageLocation.resolve(fileName).normalize();

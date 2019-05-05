@@ -2,7 +2,9 @@ package se.ltucoders.bothniabladetdam.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import se.ltucoders.bothniabladetdam.exception.FileStorageException;
 import se.ltucoders.bothniabladetdam.property.FileContentTypeProperties;
 
 import java.io.IOException;
@@ -16,23 +18,41 @@ public class FileController {
         this.fileContentTypeProperties = fileContentTypeProperties;
     }
 
+    void validateFile(MultipartFile file) {
+        controlName(file);
+        controlEmptySubmission(file);
+        controlFileType(file);
+    }
+
     // Checks if the file's name contains invalid characters
     //***If we will change names of the images after they***//
     //***being uploaded this method can be removed!***//
-     boolean controlName(String fileName) {
-         return (!fileName.contains("..") && !fileName.contains("/") && !fileName.contains("\\"));
+    private void controlName(MultipartFile file) {
+         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+         if (fileName.contains("..") || fileName.contains("/") || fileName.contains("\\")) {
+             throw new FileStorageException("Sorry! The file " + fileName +
+                     " contains invalid character or " + "sequence of characters!");
+         }
     }
 
-    // Checks if file content type is an empty stream
-    boolean controlEmptySubmission(MultipartFile file) {
-        return (file.getContentType() != null ||
-                !file.isEmpty() ||
-                !file.getContentType().equals(fileContentTypeProperties.getEmptyStream()));
+    // Checks if there is no uploaded file
+    private void controlEmptySubmission(MultipartFile file) {
+        if (file.getContentType() == null ||
+                file.isEmpty() ||
+                file.getContentType().equals(fileContentTypeProperties.getEmptyStream())) {
+            throw new FileStorageException("Sorry! You have to upload at least one image!");
+        }
+
     }
 
     // Checks if a file format corresponds to one of the predefined types
-    boolean controlFileType(String fileContentType) {
-        return (validContentType(fileContentType));
+    private void controlFileType(MultipartFile file) {
+        if (!validContentType(file.getContentType())) {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            throw new FileStorageException("Sorry! The file " + fileName +
+                    " has wrong file format - " + file.getContentType() + "!");
+        }
+
     }
 
     // Compares that content type is equal to one of the predefined types
