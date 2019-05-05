@@ -96,7 +96,6 @@ public class ImageRepository {
             CriteriaBuilder cBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Image> criteriaQuery = cBuilder.createQuery(Image.class);
             Root<Image> imageRoot = criteriaQuery.from(Image.class);
-            Root<Users> usersRoot = criteriaQuery.from(Users.class);
 
 
             List<Predicate> tagPredicate = new ArrayList<>();   //Holds the list of id's to be added to the OR condition

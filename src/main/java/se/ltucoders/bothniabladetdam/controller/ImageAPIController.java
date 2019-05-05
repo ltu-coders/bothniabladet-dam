@@ -210,7 +210,12 @@ public class ImageAPIController {
             image.setNoOfAllowedUses(12);
             image.setPrice(new BigDecimal(222));
 
-            imageRepository.save(image);
+            try{
+                imageRepository.save(image);
+
+            } catch (Exception ex) {
+                System.out.println("Kunde inte spara bilden: "  + ex.getMessage());
+            }
 
         }
 
