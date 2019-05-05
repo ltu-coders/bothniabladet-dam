@@ -14,7 +14,7 @@ public class ImageCopy {
     @Column(name = "imageCopyId")
     private int imageCopyId;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+    @ManyToOne(cascade = {CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "originalImageId")
     @JsonBackReference
@@ -38,7 +38,7 @@ public class ImageCopy {
     @Transient
     private String fileName;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+    @ManyToOne(cascade = {CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "modifiedBy")
     @JsonBackReference
@@ -53,11 +53,12 @@ public class ImageCopy {
     public ImageCopy() {
     }
 
-    public ImageCopy(Image image, Users modifiedBy, LocalDateTime dateTime, String description) {
+    public ImageCopy(Image image, Users modifiedBy, LocalDateTime dateTime, String description, Image newImage) {
         this.image = image;
         this.modifiedBy = modifiedBy;
         this.dateTime = dateTime;
         this.description = description;
+        this.newImage = newImage;
     }
 
     public int getImageCopyId() {

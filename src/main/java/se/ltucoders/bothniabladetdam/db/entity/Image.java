@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -271,5 +272,12 @@ public class Image implements File {
             imageUses = new ArrayList<>();
         }
         imageUses.add(theImageUse);
+    }
+    public void addImageCopy(ImageCopy theImageCopy) {
+        if (imageCopies != null) {
+            imageCopies = new HashSet<>();
+        }
+        imageCopies.add(theImageCopy);
+
     }
 }
