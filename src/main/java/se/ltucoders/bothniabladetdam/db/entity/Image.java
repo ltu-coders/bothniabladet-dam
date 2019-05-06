@@ -78,7 +78,10 @@ public class Image implements File {
     @Column(name = "price")
     private BigDecimal price;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.DETACH,
+                    CascadeType.MERGE,
+                    CascadeType.REFRESH})
     @JoinTable(
             name = "ImagesTags",
             joinColumns = @JoinColumn(name = "imageId"),
@@ -278,6 +281,17 @@ public class Image implements File {
             imageCopies = new HashSet<>();
         }
         imageCopies.add(theImageCopy);
-
     }
+    public void addTag(Tag theTag){
+        if (tags == null){
+            tags = new HashSet<>();
+        }
+        tags.add(theTag);
+    }    public void addTag(Set<Tag> theTags){
+        if (tags == null){
+            tags = new HashSet<>();
+        }
+        tags.addAll(theTags);
+    }
+
 }

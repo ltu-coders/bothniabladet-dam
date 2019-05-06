@@ -5,6 +5,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -31,6 +32,10 @@ public class Tag {
     public Tag() {
     }
 
+    public Tag(String tagName) {
+        this.tagName = tagName;
+    }
+
     public int getTagId() {
         return tagId;
     }
@@ -53,5 +58,18 @@ public class Tag {
 
     public void setImages(Set<Image> images) {
         this.images = images;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return tagName.equals(tag.tagName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tagName);
     }
 }
