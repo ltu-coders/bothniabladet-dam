@@ -12,7 +12,7 @@ public class FitsConfiguration {
     @Bean
     public Fits fits() {
         try {
-            return new Fits("C:\\Users\\fredr\\Downloads\\fits-1.4.1\\");
+            return new Fits("C:\\Program Files\\fits\\fits-1.4.1\\");
 
         } catch (FitsConfigurationException ex) {
             ex.printStackTrace();

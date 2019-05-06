@@ -8,6 +8,7 @@ import edu.harvard.hul.ois.fits.exceptions.FitsConfigurationException;
 import edu.harvard.hul.ois.fits.exceptions.FitsException;
 import edu.harvard.hul.ois.fits.identity.ExternalIdentifier;
 import edu.harvard.hul.ois.fits.identity.FitsIdentity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
@@ -18,16 +19,11 @@ import java.util.List;
 @Service
 public class MetadataService {
 
-    private String fitsDirectory = "C:\\Program Files\\Fits\\fits-1.4.1";
-    Fits fits;
+    private Fits fits;
 
-
-    public MetadataService() {
-        try {
-            fits = new Fits(fitsDirectory);
-        } catch (FitsConfigurationException ex) {
-            ex.printStackTrace();
-        }
+    @Autowired
+    public MetadataService(Fits theFits) {
+            this.fits = theFits;
     }
 
 
