@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import se.ltucoders.bothniabladetdam.property.FileContentTypeProperties;
 import se.ltucoders.bothniabladetdam.property.FileStorageProperties;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class)
 @EnableConfigurationProperties({
         FileContentTypeProperties.class,
         FileStorageProperties.class
