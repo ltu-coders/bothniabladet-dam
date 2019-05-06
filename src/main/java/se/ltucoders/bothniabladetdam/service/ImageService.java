@@ -7,15 +7,17 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import se.ltucoders.bothniabladetdam.db.ImageRepository;
-import se.ltucoders.bothniabladetdam.db.TagRepository;
 import se.ltucoders.bothniabladetdam.db.UsersRepository;
 import se.ltucoders.bothniabladetdam.db.entity.Image;
-import se.ltucoders.bothniabladetdam.db.entity.Tag;
 import se.ltucoders.bothniabladetdam.exception.DataStorageException;
+import se.ltucoders.bothniabladetdam.exception.FileValidationException;
+import se.ltucoders.bothniabladetdam.property.FileStorageProperties;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Service
 public class ImageService {
@@ -23,48 +25,50 @@ public class ImageService {
     private final UsersRepository usersRepository;
     private final ImageRepository imageRepository;
     private final MetadataService metadataService;
-    private final TagRepository tagRepository;
+    private final Path storageLocation;
 
 
     @Autowired
-    public ImageService(UsersRepository usersRepository,
-                        ImageRepository imageRepository,
-                        MetadataService metadataService,
-                        TagRepository tagRepository) {
+    public ImageService(UsersRepository usersRepository, ImageRepository imageRepository,
+                        MetadataService metadataService, FileStorageProperties fileStorageProperties) {
         this.usersRepository = usersRepository;
         this.imageRepository = imageRepository;
         this.metadataService = metadataService;
-        this.tagRepository = tagRepository;
+        this.storageLocation = Paths.get(fileStorageProperties.getLocation()).toAbsolutePath().normalize();
     }
 
     public void createImage(String tags, String author, String licenseType, MultipartFile file) {
+        File imageFile;
         Image image = new Image();
-        image.setAuthor(usersRepository.getUserByUsername(author));
+
         image.setFileName(StringUtils.cleanPath(file.getOriginalFilename()));
+        imageFile = new File(storageLocation.resolve(image.getFileName()).normalize().toString());
+
+        image.setAuthor(usersRepository.getUserByUsername(author));
         image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/image/")
                 .path(StringUtils.cleanPath(file.getOriginalFilename()))
                 .toUriString());
         image.setLicenseType(licenseType);
 
+        image.setResolution(metadataService.extractResolution(imageFile));
+        image.setWidth(metadataService.extractWidth(imageFile));
+        image.setHeight(metadataService.extractHeight(imageFile));
+        image.setFileSize(metadataService.extractSize(imageFile));
+        image.setMake(metadataService.extractCameraManufacturer(imageFile));
+        image.setModel(metadataService.extractCameraModelName(imageFile));
+        image.setLocation(metadataService.extractLocation(imageFile));
+        image.setDateTime(metadataService.extractDateTime(imageFile));
+
         // TODO: Here should be a method that extracts metadata from the
         //  image and assigns it to the right image property.
 
         // TODO:Bellow is data for testing,
         //  which have to be removed when extracting method is ready:
-        //image.setTags(createTagSet(tags));
         image.setDescription("Description");
-        image.setResolution("Resolution");
-        image.setWidth(0);
-        image.setHeight(0);
-        image.setFileSize("File size");
-        image.setDateTime(LocalDateTime.now());
-        image.setMake("Canon");
-        image.setModel("700p");
-        image.setLocation("Luleå");
-        image.setLicenseType("License type");
-        image.setNoOfAllowedUses(12);
-        image.setPrice(new BigDecimal(222));
+//        *******image.setPrice(new BigDecimal(222));
+//        image.setDateTime(LocalDateTime.now());
+//        *******image.setNoOfAllowedUses(12);
 
         try {
             imageRepository.save(image);
@@ -74,31 +78,6 @@ public class ImageService {
             throw new DataStorageException("Sorry! Could not store data in the database! " +
                     "Make sure that all required fields are filled in and contain correct information!");
         }
-    }
-
-
-    /*
-    Needs to be rewritten completely. This is a quickfix.
-     */
-    private Set<Tag> createTagSet(String[] inputTags) {
-        /*
-        Gets all tags from db that already exists.
-         */
-        Set<Tag> tagSet = tagRepository.getTagByString(inputTags);
-
-        /*
-        Tries to persist the new tag but if it already exists exception is thrown and tag not added to set.
-         */
-        for (String tag : inputTags) {
-            Tag newTag = new Tag(tag);
-            try {
-                tagRepository.save(newTag);
-                tagSet.add(newTag);
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-        return tagSet;
     }
 
 }
