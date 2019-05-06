@@ -19,12 +19,16 @@ public class ImageService {
 
     private final UsersRepository usersRepository;
     private final ImageRepository imageRepository;
+    private final MetadataService metadataService;
 
 
     @Autowired
-    public ImageService(UsersRepository usersRepository, ImageRepository imageRepository) {
+    public ImageService(UsersRepository usersRepository,
+                        ImageRepository imageRepository,
+                        MetadataService metadataService) {
         this.usersRepository = usersRepository;
         this.imageRepository = imageRepository;
+        this.metadataService = metadataService;
     }
 
     public void createImage(String tags, String author, String licenseType, MultipartFile file) {
