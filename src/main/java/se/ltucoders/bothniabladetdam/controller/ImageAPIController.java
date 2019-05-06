@@ -68,9 +68,7 @@ public class ImageAPIController {
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setTags(getTagArray(tags));
         searchCriteria.setLicenseType(licenseType);
-        // TODO: change the author data type from int to String inside the SearchCriteria (Fredrik)
-        // When done uncomment the line bellow
-        //searchCriteria.setAuthor(author);
+        searchCriteria.setAuthor(author);
         searchCriteria.setResolution(resolution);
         searchCriteria.setMaxWidth(parseStringNumber(maxWidth));
         searchCriteria.setMinWidth(parseStringNumber(minWidth));

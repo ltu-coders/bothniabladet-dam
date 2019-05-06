@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class SearchCriteria {
     private String[] tags;
     private String licenseType;
-    private int author;
+    private String author;
     private String resolution; //Not currently used
     private int maxWidth;
     private int minWidth;
@@ -23,7 +23,7 @@ public class SearchCriteria {
 
     public SearchCriteria(String[] tags,
                           String licenseType,
-                          int author,
+                          String author,
                           String resolution,
                           int maxWidth,
                           int minWidth,
@@ -49,12 +49,14 @@ public class SearchCriteria {
         this.model = model;
     }
 
-    public SearchCriteria(String[] tags, int author, LocalDateTime fromDate, LocalDateTime toDate) {
+    public SearchCriteria(String[] tags, String author, LocalDateTime fromDate, LocalDateTime toDate) {
         this.tags = tags;
         this.author = author;
         this.fromDate = fromDate;
         this.toDate = toDate;
     }
+
+
 
     public String[] getTags() {
         return tags;
@@ -72,11 +74,11 @@ public class SearchCriteria {
         this.licenseType = licenseType;
     }
 
-    public int getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(int author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 

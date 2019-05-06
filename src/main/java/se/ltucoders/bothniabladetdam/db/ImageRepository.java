@@ -87,12 +87,6 @@ public class ImageRepository {
                     "inner join Tags t " +
                     "where t.tagId = it.tagId AND (t.tagName IN :tags)";
 
-            //Fetches the id's of the images mapped to specific tags
-            NativeQuery query = session.createNativeQuery(sql);
-            query.setParameterList("tags", searchCriteria.getTags());
-
-            List<Integer> imagesId = query.getResultList();
-
             CriteriaBuilder cBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Image> criteriaQuery = cBuilder.createQuery(Image.class);
             Root<Image> imageRoot = criteriaQuery.from(Image.class);
@@ -102,14 +96,10 @@ public class ImageRepository {
             List<Predicate> predicateList = new ArrayList<>();  //in the where clause
 
             //If there are > 0 tags add them as predicates
-            if (searchCriteria.getTags().length > 0) {
-                for (int loop = 0; loop < imagesId.size(); loop++) {
-                    tagPredicate.add(cBuilder.equal(imageRoot.get("imageId"), imagesId.get(loop)));
-                }
-            }
+
             //if author is a search criteria, add that as a predicate
-            if (searchCriteria.getAuthor()>0){
-                predicateList.add(cBuilder.equal(imageRoot.get("author"), searchCriteria.getAuthor()));
+            if (searchCriteria.getAuthor() != null){
+                predicateList.add(cBuilder.equal(imageRoot.get("author").get("userName"), searchCriteria.getAuthor()));
             }
             if (searchCriteria.getFromDate() != null) {
                 predicateList.add(cBuilder.greaterThanOrEqualTo(imageRoot.get("dateTime"), searchCriteria.getFromDate()));
@@ -117,16 +107,30 @@ public class ImageRepository {
             if (searchCriteria.getToDate() != null) {
                 predicateList.add(cBuilder.lessThanOrEqualTo(imageRoot.get("dateTime"), searchCriteria.getToDate()));
             }
+            if (searchCriteria.getTags() != null  && searchCriteria.getTags().length > 0) {
 
-            //Add the list of imageId predicates as an OR condition
-            Predicate keywords = cBuilder.or(tagPredicate.toArray(new Predicate[0]));
+                //Fetches the id's of the images mapped to specific tags
+                NativeQuery query = session.createNativeQuery(sql);
+                query.setParameterList("tags", searchCriteria.getTags());
 
-            //Adds the other criterias as AND conditions
-            Predicate finalPredicate = cBuilder.and(predicateList.toArray(new Predicate[0]));
-            criteriaQuery.where(finalPredicate, keywords).distinct(true);
-            org.hibernate.query.Query<Image> imageQuery = session.createQuery(criteriaQuery);
+                List<Integer> imagesId = query.getResultList();
+                for (int loop = 0; loop < imagesId.size(); loop++) {
+                    tagPredicate.add(cBuilder.equal(imageRoot.get("imageId"), imagesId.get(loop)));
+                }
 
-            return imageQuery.getResultList();
+                Predicate keywords = cBuilder.or(tagPredicate.toArray(new Predicate[0]));
+                Predicate finalPredicate = cBuilder.and(predicateList.toArray(new Predicate[0]));
+                criteriaQuery.where(finalPredicate, keywords).distinct(true);
+                org.hibernate.query.Query<Image> imageQuery = session.createQuery(criteriaQuery);
+
+                return imageQuery.getResultList();
+            } else {
+
+                criteriaQuery.where(cBuilder.and(predicateList.toArray(new Predicate[0]))).distinct(true);
+                org.hibernate.query.Query<Image> imageQuery = session.createQuery(criteriaQuery);
+                return imageQuery.getResultList();
+
+            }
 
         } catch (HibernateException ex) {
             ex.printStackTrace();
@@ -134,5 +138,5 @@ public class ImageRepository {
 
         return new ArrayList<Image>();
 
-        }
+    }
 }
