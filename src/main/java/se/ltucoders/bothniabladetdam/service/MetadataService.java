@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -99,13 +100,13 @@ public class MetadataService {
 
     public LocalDateTime extractDateTime(File file) {
         try {
-            FitsOutput fileSize = fits.examine(file);
-            FitsMetadataElement dateTime = fileSize.getMetadataElement("created");
+            FitsOutput fitsOutput = fits.examine(file);
+            FitsMetadataElement dateTime = fitsOutput.getMetadataElement("created");
             if (dateTime != null) {
-                return null;
+                // TODO: move the pattern to the properties file
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss");
+                return LocalDateTime.parse(dateTime.getValue(), formatter);
             }
-            //todo: Convert to LocalDateTime
-            // Format 2018:09:16 14:43:53
         } catch (FitsException ex) {
             ex.printStackTrace();
         }
