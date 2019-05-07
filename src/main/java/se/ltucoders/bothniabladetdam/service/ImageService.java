@@ -34,7 +34,8 @@ public class ImageService {
 
     @Autowired
     public ImageService(UsersRepository usersRepository, ImageRepository imageRepository,
-                        MetadataService metadataService, FileStorageProperties fileStorageProperties) {
+                        MetadataService metadataService, TagRepository tagRepository, 
+                        FileStorageProperties fileStorageProperties) {
         this.usersRepository = usersRepository;
         this.imageRepository = imageRepository;
         this.metadataService = metadataService;
