@@ -13,6 +13,7 @@ import se.ltucoders.bothniabladetdam.db.entity.Image;
 import se.ltucoders.bothniabladetdam.db.entity.Tag;
 import se.ltucoders.bothniabladetdam.exception.DataStorageException;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -37,14 +38,15 @@ public class ImageService {
         this.tagRepository = tagRepository;
     }
 
-    public void createImage(String tags, String author, String licenseType, MultipartFile file) {
+    public void createImage(String tags, String author, String licenseType, File file) {
         Image image = new Image();
         image.setAuthor(usersRepository.getUserByUsername(author));
-        image.setFileName(StringUtils.cleanPath(file.getOriginalFilename()));
-        image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/image/")
-                .path(StringUtils.cleanPath(file.getOriginalFilename()))
-                .toUriString());
+        image.setFileName(file.getName());
+        image.setFilePath(file.getPath());
+//        image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
+//                .path("/image/")
+//                .path(StringUtils.cleanPath(file.getOriginalFilename()))
+//                .toUriString());
         image.setLicenseType(licenseType);
 
         // TODO: Here should be a method that extracts metadata from the
@@ -53,18 +55,18 @@ public class ImageService {
         // TODO:Bellow is data for testing,
         //  which have to be removed when extracting method is ready:
         //image.setTags(createTagSet(tags));
-        image.setDescription("Description");
-        image.setResolution("Resolution");
-        image.setWidth(0);
-        image.setHeight(0);
-        image.setFileSize("File size");
-        image.setDateTime(LocalDateTime.now());
-        image.setMake("Canon");
-        image.setModel("700p");
-        image.setLocation("Luleå");
-        image.setLicenseType("License type");
-        image.setNoOfAllowedUses(12);
-        image.setPrice(new BigDecimal(222));
+        image.setDescription("Description"); //TODO: get description input
+        image.setResolution(metadataService.extractResolution(file));
+        image.setWidth(metadataService.extractWidth(file));
+        image.setHeight(metadataService.extractHeight(file));
+        image.setFileSize(metadataService.extractSize(file));
+        image.setDateTime(metadataService.extractDateTime(file));
+        image.setMake(metadataService.extractCameraManufacturer(file));
+        image.setModel(metadataService.extractCameraModelName(file));
+        image.setLocation(metadataService.extractLocation(file));
+        image.setLicenseType(licenseType);
+        image.setNoOfAllowedUses(12); //TODO: get allowed uses input
+        image.setPrice(new BigDecimal(222)); //TODO: get price input
 
         try {
             imageRepository.save(image);

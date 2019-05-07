@@ -10,6 +10,7 @@ import se.ltucoders.bothniabladetdam.exception.FileNotFoundException;
 import se.ltucoders.bothniabladetdam.exception.FileStorageException;
 import se.ltucoders.bothniabladetdam.property.FileStorageProperties;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -34,7 +35,7 @@ public class FileStorageService {
     }
 
     // Stores file in the repository
-    public void storeFile(MultipartFile file) {
+    public File storeFile(MultipartFile file) {
         // Normalize file name
         // https://docs.oracle.com/javase/tutorial/essential/io/pathOps.html
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -42,6 +43,7 @@ public class FileStorageService {
             // Copy file to the target location. Replacing existing file with the same name.
             Path targetLocation = this.storageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            return targetLocation.toFile();
         } catch (IOException e) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!");
         }
