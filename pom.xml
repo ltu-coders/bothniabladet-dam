@@ -54,14 +54,6 @@
             <artifactId>sqlite-dialect</artifactId>
             <version>0.1.0</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-search -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-search</artifactId>
-            <version>5.11.1.Final</version>
-        </dependency>
-
     </dependencies>
 
     <build>

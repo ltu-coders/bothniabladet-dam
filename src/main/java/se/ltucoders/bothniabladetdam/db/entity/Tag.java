@@ -1,7 +1,6 @@
 package se.ltucoders.bothniabladetdam.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Tags")
-@Indexed
 public class Tag {
 
     @Id

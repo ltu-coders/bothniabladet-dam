@@ -1,9 +1,6 @@
 package se.ltucoders.bothniabladetdam.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -15,7 +12,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Images")
-@Indexed
 public class Image implements File {
 
     @Id
@@ -34,7 +30,6 @@ public class Image implements File {
     @JoinColumn(name = "author")
     private Users author;
 
-    @Field
     @Column(name = "description")
     private String description;
 
@@ -50,31 +45,24 @@ public class Image implements File {
     @Column(name = "fileSize")
     private String fileSize;
 
-    @Field
     @Column(name = "dateTime")
     private LocalDateTime dateTime;
 
-    @Field
     @Column(name = "make")
     private String make;
 
-    @Field
     @Column(name = "model")
     private String model;
 
-    @Field
     @Column(name = "location")
     private String location;
 
-    @Field
     @Column(name = "licenseType")
     private String licenseType;
 
-    @Field
     @Column(name = "noOfAllowedUses")
     private int noOfAllowedUses;
 
-    @Field
     @Column(name = "price")
     private BigDecimal price;
 

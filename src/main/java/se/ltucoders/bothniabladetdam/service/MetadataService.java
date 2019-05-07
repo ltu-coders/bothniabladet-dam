@@ -176,7 +176,7 @@ public class MetadataService {
     }
 
 
-    public String extrcatPronom(File file) throws FitsException {
+    public String extrcatPronom(File file) {
         try {
             FitsOutput fitsOutput = fits.examine(file);
             List<FitsIdentity> fitsIdentityList = fitsOutput.getIdentities();
