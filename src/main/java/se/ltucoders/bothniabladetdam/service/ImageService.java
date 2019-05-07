@@ -65,6 +65,8 @@ public class ImageService {
 
         // TODO:Bellow is data for testing,
         //  which have to be removed when extracting method is ready:
+        image.setTags(createTagSet(tags.trim().split("\\s*,\\s*")));
+
         image.setDescription("Description");
 //        *******image.setPrice(new BigDecimal(222));
 //        image.setDateTime(LocalDateTime.now());

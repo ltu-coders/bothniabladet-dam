@@ -78,6 +78,15 @@ public class Image implements File {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Column(name = "puid")
+    private String puid;
+
+    @Column(name = "filetype")
+    private String filetype;
+
+    @Column(name = "filetypeVersion")
+    private String filetypeVersion;
+
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.DETACH,
                     CascadeType.MERGE,
@@ -236,6 +245,30 @@ public class Image implements File {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public String getPuid() {
+        return puid;
+    }
+
+    public void setPuid(String puid) {
+        this.puid = puid;
+    }
+
+    public String getFiletype() {
+        return filetype;
+    }
+
+    public void setFiletype(String filetype) {
+        this.filetype = filetype;
+    }
+
+    public String getFiletypeVersion() {
+        return filetypeVersion;
+    }
+
+    public void setFiletypeVersion(String filetypeVersion) {
+        this.filetypeVersion = filetypeVersion;
     }
 
     public Set<Tag> getTags() {
