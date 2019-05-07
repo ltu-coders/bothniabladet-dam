@@ -52,7 +52,7 @@ public class ImageService {
 
         // TODO:Bellow is data for testing,
         //  which have to be removed when extracting method is ready:
-        //image.setTags(createTagSet(tags));
+        image.setTags(createTagSet(tags.trim().split("\\s*,\\s*")));
         image.setDescription("Description");
         image.setResolution("Resolution");
         image.setWidth(0);
