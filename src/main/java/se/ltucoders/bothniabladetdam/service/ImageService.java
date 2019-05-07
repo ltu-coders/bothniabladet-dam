@@ -48,17 +48,12 @@ public class ImageService {
         Image image = new Image();
         image.setAuthor(usersRepository.getUserByUsername(author));
         image.setFileName(file.getName());
-        image.setFilePath(file.toURI().toString());
-
+        image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/image/")
+                .path(StringUtils.cleanPath(file.getName()))
+                .toUriString());
 
         image.setLicenseType(licenseType);
-
-        // TODO: Here should be a method that extracts metadata from the
-        //  image and assigns it to the right image property.
-
-        // TODO:Bellow is data for testing,
-        //  which have to be removed when extracting method is ready:
-        image.setDescription("Description"); //TODO: get description input
         image.setResolution(metadataService.extractResolution(file));
         image.setWidth(metadataService.extractWidth(file));
         image.setHeight(metadataService.extractHeight(file));
@@ -69,6 +64,9 @@ public class ImageService {
         image.setLocation(metadataService.extractLocation(file));
         image.setPuid(metadataService.extrcatPronom(file));
         image.setLicenseType(licenseType);
+
+
+        image.setDescription("Description"); //TODO: get description input
         image.setNoOfAllowedUses(12); //TODO: get allowed uses input
         image.setPrice(new BigDecimal(222)); //TODO: get price input
         image.setTags(createTagSet(tags.trim().split("\\s*,\\s*")));
