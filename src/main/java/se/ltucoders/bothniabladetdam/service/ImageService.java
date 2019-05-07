@@ -48,22 +48,10 @@ public class ImageService {
         Image image = new Image();
         image.setAuthor(usersRepository.getUserByUsername(author));
         image.setFileName(file.getName());
-        image.setFilePath(file.getPath());
-        image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/image/")
-                .path(StringUtils.cleanPath(file.getOriginalFilename()))
-                .toUriString());
+        image.setFilePath(file.toURI().toString());
+
 
         image.setLicenseType(licenseType);
-
-        image.setResolution(metadataService.extractResolution(imageFile));
-        image.setWidth(metadataService.extractWidth(imageFile));
-        image.setHeight(metadataService.extractHeight(imageFile));
-        image.setFileSize(metadataService.extractSize(imageFile));
-        image.setMake(metadataService.extractCameraManufacturer(imageFile));
-        image.setModel(metadataService.extractCameraModelName(imageFile));
-        image.setLocation(metadataService.extractLocation(imageFile));
-        image.setDateTime(metadataService.extractDateTime(imageFile));
 
         // TODO: Here should be a method that extracts metadata from the
         //  image and assigns it to the right image property.
@@ -79,6 +67,7 @@ public class ImageService {
         image.setMake(metadataService.extractCameraManufacturer(file));
         image.setModel(metadataService.extractCameraModelName(file));
         image.setLocation(metadataService.extractLocation(file));
+        image.setPuid(metadataService.extrcatPronom(file));
         image.setLicenseType(licenseType);
         image.setNoOfAllowedUses(12); //TODO: get allowed uses input
         image.setPrice(new BigDecimal(222)); //TODO: get price input
