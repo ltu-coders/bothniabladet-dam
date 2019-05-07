@@ -4,12 +4,10 @@ package se.ltucoders.bothniabladetdam.service;
 import edu.harvard.hul.ois.fits.Fits;
 import edu.harvard.hul.ois.fits.FitsMetadataElement;
 import edu.harvard.hul.ois.fits.FitsOutput;
-import edu.harvard.hul.ois.fits.exceptions.FitsConfigurationException;
 import edu.harvard.hul.ois.fits.exceptions.FitsException;
 import edu.harvard.hul.ois.fits.identity.ExternalIdentifier;
 import edu.harvard.hul.ois.fits.identity.FitsIdentity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -21,19 +19,21 @@ import java.util.List;
 public class MetadataService {
 
     private Fits fits;
+    DataParsingService dataParsingService;
 
     @Autowired
-    public MetadataService(Fits theFits) {
+    public MetadataService(Fits theFits, DataParsingService dataParsingService) {
             this.fits = theFits;
+            this.dataParsingService = dataParsingService;
     }
 
 
     public String extractFileName(File file) {
         try {
             FitsOutput fitsOutput = fits.examine(file);
-            FitsMetadataElement resolution = fitsOutput.getMetadataElement("filename");
-            if (resolution != null) {
-                return resolution.getValue();
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("filename");
+            if (fitsMetadataElement != null) {
+                return fitsMetadataElement.getValue();
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
@@ -45,9 +45,9 @@ public class MetadataService {
     public String extractResolution(File file) {
         try {
             FitsOutput fitsOutput = fits.examine(file);
-            FitsMetadataElement resolution = fitsOutput.getMetadataElement("xSamplingFrequency");
-            if (resolution != null) {
-                return resolution.getValue() + " dpi";
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("xSamplingFrequency");
+            if (fitsMetadataElement != null) {
+                return fitsMetadataElement.getValue() + " dpi";
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
@@ -59,9 +59,9 @@ public class MetadataService {
     public int extractWidth(File file) {
         try {
             FitsOutput fitsOutput = fits.examine(file);
-            FitsMetadataElement width = fitsOutput.getMetadataElement("imageWidth");
-            if (width != null) {
-                return Integer.parseInt(width.getValue());
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("imageWidth");
+            if (fitsMetadataElement != null) {
+                return Integer.parseInt(fitsMetadataElement.getValue());
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
@@ -73,9 +73,9 @@ public class MetadataService {
     public int extractHeight(File file) {
         try {
             FitsOutput fitsOutput = fits.examine(file);
-            FitsMetadataElement height = fitsOutput.getMetadataElement("imageHeight");
-            if (height != null) {
-                return Integer.parseInt(height.getValue());
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("imageHeight");
+            if (fitsMetadataElement != null) {
+                return Integer.parseInt(fitsMetadataElement.getValue());
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
@@ -86,10 +86,10 @@ public class MetadataService {
 
     public String extractSize(File file) {
         try {
-            FitsOutput fileSize = fits.examine(file);
-            FitsMetadataElement size = fileSize.getMetadataElement("size");
-            if (size != null) {
-                return size.getValue();
+            FitsOutput fitsOutput = fits.examine(file);
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("size");
+            if (fitsMetadataElement != null) {
+                return fitsMetadataElement.getValue();
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
@@ -98,14 +98,16 @@ public class MetadataService {
     }
 
 
+    // TODO: Should it return now() or null?
     public LocalDateTime extractDateTime(File file) {
         try {
             FitsOutput fitsOutput = fits.examine(file);
-            FitsMetadataElement dateTime = fitsOutput.getMetadataElement("created");
-            if (dateTime != null) {
-                // TODO: move the pattern to the properties file
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss");
-                return LocalDateTime.parse(dateTime.getValue(), formatter);
+
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("created");
+            if (fitsMetadataElement != null) {
+                return dataParsingService.parseDateTime(fitsMetadataElement.getValue(),
+                        "yyyy:MM:dd HH:mm:ss");
+
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
@@ -116,10 +118,10 @@ public class MetadataService {
 
     public String extractCameraManufacturer(File file) {
         try {
-            FitsOutput fileSize = fits.examine(file);
-            FitsMetadataElement cameraManufacturer = fileSize.getMetadataElement("digitalCameraManufacturer");
-            if (cameraManufacturer != null) {
-                return cameraManufacturer.getValue();
+            FitsOutput fitsOutput = fits.examine(file);
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("digitalCameraManufacturer");
+            if (fitsMetadataElement != null) {
+                return fitsMetadataElement.getValue();
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
@@ -131,10 +133,10 @@ public class MetadataService {
     //digitalCameraModelName
     public String extractCameraModelName(File file) {
         try {
-            FitsOutput fileSize = fits.examine(file);
-            FitsMetadataElement cameraModelName = fileSize.getMetadataElement("digitalCameraModelName");
-            if (cameraModelName != null) {
-                return cameraModelName.getValue();
+            FitsOutput fitsOutput = fits.examine(file);
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("digitalCameraModelName");
+            if (fitsMetadataElement != null) {
+                return fitsMetadataElement.getValue();
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
@@ -145,10 +147,10 @@ public class MetadataService {
 
     public String extractProducer(File file) {
         try {
-            FitsOutput fileSize = fits.examine(file);
-            FitsMetadataElement producer = fileSize.getMetadataElement("imageProducer");
-            if (producer != null) {
-                return producer.getValue();
+            FitsOutput fitsOutput = fits.examine(file);
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("imageProducer");
+            if (fitsMetadataElement != null) {
+                return fitsMetadataElement.getValue();
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
@@ -160,9 +162,9 @@ public class MetadataService {
 
     public String extractLocation(File file) {
         try {
-            FitsOutput fileSize = fits.examine(file);
-            FitsMetadataElement gpsLatitude = fileSize.getMetadataElement("gpsLatitude");
-            FitsMetadataElement gpsLongitude = fileSize.getMetadataElement("gpsLongitude");
+            FitsOutput fitsOutput = fits.examine(file);
+            FitsMetadataElement gpsLatitude = fitsOutput.getMetadataElement("gpsLatitude");
+            FitsMetadataElement gpsLongitude = fitsOutput.getMetadataElement("gpsLongitude");
             if (gpsLatitude != null && gpsLongitude != null) {
                 String gpsLocation = gpsLatitude.getValue() + " " + gpsLongitude.getValue();
                 return gpsLocation;

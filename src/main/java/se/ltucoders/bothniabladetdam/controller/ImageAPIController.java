@@ -11,17 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 import se.ltucoders.bothniabladetdam.db.ImageRepository;
 import se.ltucoders.bothniabladetdam.db.SearchCriteria;
 import se.ltucoders.bothniabladetdam.db.entity.Image;
+import se.ltucoders.bothniabladetdam.service.DataParsingService;
 import se.ltucoders.bothniabladetdam.service.FileStorageService;
 import se.ltucoders.bothniabladetdam.service.ImageService;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoField;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.io.File;
 
 @RestController
 public class ImageAPIController {
@@ -30,15 +27,18 @@ public class ImageAPIController {
     private final FileController fileController;
     private final ImageRepository imageRepository;
     private final ImageService imageService;
+    private final DataParsingService dataParsingService;
 
 
     @Autowired
     public ImageAPIController(FileStorageService fileStorageService, FileController fileController,
-                              ImageRepository imageRepository, ImageService imageService) {
+                              ImageRepository imageRepository, ImageService imageService,
+                              DataParsingService dataParsingService) {
         this.fileStorageService = fileStorageService;
         this.fileController = fileController;
         this.imageRepository = imageRepository;
         this.imageService = imageService;
+        this.dataParsingService = dataParsingService;
     }
 
     // TODO: Are we going to need this method?
@@ -70,12 +70,12 @@ public class ImageAPIController {
         searchCriteria.setLicenseType(licenseType);
         searchCriteria.setAuthor(author);
         searchCriteria.setResolution(resolution);
-        searchCriteria.setMaxWidth(parseStringNumber(maxWidth));
-        searchCriteria.setMinWidth(parseStringNumber(minWidth));
-        searchCriteria.setMaxHeight(parseStringNumber(maxHeight));
-        searchCriteria.setMinHeight(parseStringNumber(minHeight));
-        searchCriteria.setFromDate(parseStringDate(fromDate));
-        searchCriteria.setToDate(parseStringDate(toDate));
+        searchCriteria.setMaxWidth(dataParsingService.parseNumber(maxWidth));
+        searchCriteria.setMinWidth(dataParsingService.parseNumber(minWidth));
+        searchCriteria.setMaxHeight(dataParsingService.parseNumber(maxHeight));
+        searchCriteria.setMinHeight(dataParsingService.parseNumber(minHeight));
+        searchCriteria.setFromDate(dataParsingService.parseDateTime(fromDate));
+        searchCriteria.setToDate(dataParsingService.parseDateTime(toDate));
         searchCriteria.setEditor(editor);
         searchCriteria.setLastModified(lastModified);
         searchCriteria.setMake(make);
@@ -85,11 +85,11 @@ public class ImageAPIController {
     }
 
 
-    // Converts string with search tags to array with tags. Uses comma as tag separator.
+    // Converts string with list of search tags to array with tags.
+    // Uses comma as tag separator.
     private String[] getTagArray(String tagString) {
-        String[] tags;
         if (tagString != null) {
-            tags = tagString.split(",");
+            String[] tags = tagString.split(",");
             for (int i = 0; i < tags.length; i++) {
                 tags[i] = tags[i].trim().replaceAll("[^ 0-9a-zåäöA-ZÅÄÖ]", "");
             }
@@ -99,39 +99,7 @@ public class ImageAPIController {
     }
 
 
-    // Converts string date (format: 2018-09-22) to LocalDateTime.
-    private LocalDateTime parseStringDate(String dateString) {
-        LocalDateTime date = null;
-        try {
-            if (dateString != null) {
-                // Makes HH:mm:ss and adds default values
-                DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                        .appendPattern("yyyy-MM-dd[HH:mm:ss]")
-                        .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-                        .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                        .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-                        .toFormatter();
-                date = LocalDateTime.parse(dateString, formatter);
-                System.out.println("The date is: " + date);
-            }
-        } catch (DateTimeParseException ex) {
-            System.out.println("The date can not be parsed. Enter valid date!");
-        }
-        return date;
-    }
 
-
-    // TODO: not a good idea to change user input. Better to use String
-    // Converts string number to integer.
-    private int parseStringNumber(String stringNumber) {
-        int number;
-        try {
-            number = Integer.parseInt(stringNumber);
-        } catch (NumberFormatException ex) {
-            number = 0;
-        }
-        return number;
-    }
 
     // TODO: In which situations do we use this method? Do we need it?
     // Gets specific image from the database
@@ -148,8 +116,9 @@ public class ImageAPIController {
                                        @RequestParam("licensetype") String licenseType) {
         for (MultipartFile file : files) {
             fileController.validateFile(file);
-            fileStorageService.storeFile(file);
-            imageService.createImage(tags, author, licenseType, file);
+            File filePath = fileStorageService.storeFile(file);
+
+            imageService.createImage(tags, author, licenseType, filePath);
         }
 
         if (files.length > 1) {
@@ -183,7 +152,7 @@ public class ImageAPIController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(request.getServletContext()
                         .getMimeType(resource.getFile()
-                        .getAbsolutePath())))
+                                .getAbsolutePath())))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);

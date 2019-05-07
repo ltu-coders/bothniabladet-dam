@@ -43,18 +43,17 @@ public class ImageService {
         this.storageLocation = Paths.get(fileStorageProperties.getLocation()).toAbsolutePath().normalize();
     }
 
-    public void createImage(String tags, String author, String licenseType, MultipartFile file) {
-        File imageFile;
+
+    public void createImage(String tags, String author, String licenseType, File file) {
         Image image = new Image();
-
-        image.setFileName(StringUtils.cleanPath(file.getOriginalFilename()));
-        imageFile = new File(storageLocation.resolve(image.getFileName()).normalize().toString());
-
         image.setAuthor(usersRepository.getUserByUsername(author));
+        image.setFileName(file.getName());
+        image.setFilePath(file.getPath());
         image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/image/")
                 .path(StringUtils.cleanPath(file.getOriginalFilename()))
                 .toUriString());
+
         image.setLicenseType(licenseType);
 
         image.setResolution(metadataService.extractResolution(imageFile));
@@ -71,12 +70,19 @@ public class ImageService {
 
         // TODO:Bellow is data for testing,
         //  which have to be removed when extracting method is ready:
+        image.setDescription("Description"); //TODO: get description input
+        image.setResolution(metadataService.extractResolution(file));
+        image.setWidth(metadataService.extractWidth(file));
+        image.setHeight(metadataService.extractHeight(file));
+        image.setFileSize(metadataService.extractSize(file));
+        image.setDateTime(metadataService.extractDateTime(file));
+        image.setMake(metadataService.extractCameraManufacturer(file));
+        image.setModel(metadataService.extractCameraModelName(file));
+        image.setLocation(metadataService.extractLocation(file));
+        image.setLicenseType(licenseType);
+        image.setNoOfAllowedUses(12); //TODO: get allowed uses input
+        image.setPrice(new BigDecimal(222)); //TODO: get price input
         image.setTags(createTagSet(tags.trim().split("\\s*,\\s*")));
-
-        image.setDescription("Description");
-//        *******image.setPrice(new BigDecimal(222));
-//        image.setDateTime(LocalDateTime.now());
-//        *******image.setNoOfAllowedUses(12);
 
         try {
             imageRepository.save(image);
