@@ -12,9 +12,13 @@ import se.ltucoders.bothniabladetdam.db.UsersRepository;
 import se.ltucoders.bothniabladetdam.db.entity.Image;
 import se.ltucoders.bothniabladetdam.db.entity.Tag;
 import se.ltucoders.bothniabladetdam.exception.DataStorageException;
+import se.ltucoders.bothniabladetdam.exception.FileValidationException;
+import se.ltucoders.bothniabladetdam.property.FileStorageProperties;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -25,36 +29,47 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final MetadataService metadataService;
     private final TagRepository tagRepository;
+    private final Path storageLocation;
 
 
     @Autowired
-    public ImageService(UsersRepository usersRepository,
-                        ImageRepository imageRepository,
-                        MetadataService metadataService,
-                        TagRepository tagRepository) {
+    public ImageService(UsersRepository usersRepository, ImageRepository imageRepository,
+                        MetadataService metadataService, TagRepository tagRepository, 
+                        FileStorageProperties fileStorageProperties) {
         this.usersRepository = usersRepository;
         this.imageRepository = imageRepository;
         this.metadataService = metadataService;
         this.tagRepository = tagRepository;
+        this.storageLocation = Paths.get(fileStorageProperties.getLocation()).toAbsolutePath().normalize();
     }
+
 
     public void createImage(String tags, String author, String licenseType, File file) {
         Image image = new Image();
         image.setAuthor(usersRepository.getUserByUsername(author));
         image.setFileName(file.getName());
         image.setFilePath(file.getPath());
-//        image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
-//                .path("/image/")
-//                .path(StringUtils.cleanPath(file.getOriginalFilename()))
-//                .toUriString());
+        image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/image/")
+                .path(StringUtils.cleanPath(file.getOriginalFilename()))
+                .toUriString());
+
         image.setLicenseType(licenseType);
+
+        image.setResolution(metadataService.extractResolution(imageFile));
+        image.setWidth(metadataService.extractWidth(imageFile));
+        image.setHeight(metadataService.extractHeight(imageFile));
+        image.setFileSize(metadataService.extractSize(imageFile));
+        image.setMake(metadataService.extractCameraManufacturer(imageFile));
+        image.setModel(metadataService.extractCameraModelName(imageFile));
+        image.setLocation(metadataService.extractLocation(imageFile));
+        image.setDateTime(metadataService.extractDateTime(imageFile));
 
         // TODO: Here should be a method that extracts metadata from the
         //  image and assigns it to the right image property.
 
         // TODO:Bellow is data for testing,
         //  which have to be removed when extracting method is ready:
-        //image.setTags(createTagSet(tags));
         image.setDescription("Description"); //TODO: get description input
         image.setResolution(metadataService.extractResolution(file));
         image.setWidth(metadataService.extractWidth(file));
@@ -67,6 +82,7 @@ public class ImageService {
         image.setLicenseType(licenseType);
         image.setNoOfAllowedUses(12); //TODO: get allowed uses input
         image.setPrice(new BigDecimal(222)); //TODO: get price input
+        image.setTags(createTagSet(tags.trim().split("\\s*,\\s*")));
 
         try {
             imageRepository.save(image);
@@ -77,8 +93,7 @@ public class ImageService {
                     "Make sure that all required fields are filled in and contain correct information!");
         }
     }
-
-
+       
     /*
     Needs to be rewritten completely. This is a quickfix.
      */
@@ -102,5 +117,5 @@ public class ImageService {
         }
         return tagSet;
     }
-
+    
 }

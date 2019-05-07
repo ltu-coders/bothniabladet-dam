@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -101,10 +102,12 @@ public class MetadataService {
     public LocalDateTime extractDateTime(File file) {
         try {
             FitsOutput fitsOutput = fits.examine(file);
+
             FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("created");
             if (fitsMetadataElement != null) {
                 return dataParsingService.parseDateTime(fitsMetadataElement.getValue(),
                         "yyyy:MM:dd HH:mm:ss");
+
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
