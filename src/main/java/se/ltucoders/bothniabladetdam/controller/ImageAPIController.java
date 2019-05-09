@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.File;
 
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class ImageAPIController {
 
@@ -115,10 +116,10 @@ public class ImageAPIController {
                                        @RequestParam("author") String author,
                                        @RequestParam("licensetype") String licenseType,
                                        @RequestParam("description") String description) {
-        for (MultipartFile file : files) {
-            fileController.validateFile(file);
-            File filePath = fileStorageService.storeFile(file);
 
+        fileController.validateFiles(files);
+        for (MultipartFile file : files) {
+            File filePath = fileStorageService.storeFile(file);
             imageService.createImage(tags, author, licenseType, description, filePath);
         }
 
