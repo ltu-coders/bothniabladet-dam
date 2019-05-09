@@ -113,12 +113,13 @@ public class ImageAPIController {
     public ResponseEntity uploadImages(@RequestParam("images") MultipartFile[] files,
                                        @RequestParam("tags") String tags,
                                        @RequestParam("author") String author,
-                                       @RequestParam("licensetype") String licenseType) {
+                                       @RequestParam("licensetype") String licenseType,
+                                       @RequestParam("description") String description) {
         for (MultipartFile file : files) {
             fileController.validateFile(file);
             File filePath = fileStorageService.storeFile(file);
 
-            imageService.createImage(tags, author, licenseType, filePath);
+            imageService.createImage(tags, author, licenseType, description, filePath);
         }
 
         if (files.length > 1) {
@@ -128,7 +129,7 @@ public class ImageAPIController {
     }
 
     // Changes information for an image
-    @PutMapping("/image")
+    @PutMapping("/images")
     public ResponseEntity changeImageInformation(@RequestBody Image image) {
         // TODO: Control users input and then call change method
         //  imageRepository.change(image);
@@ -136,15 +137,15 @@ public class ImageAPIController {
     }
 
     // Changes information for an image
-    @DeleteMapping("/image/{imageId}")
+    @DeleteMapping("/images/{imageId}")
     public ResponseEntity deleteImage(@PathVariable int imageId) {
-        // TODO: Write method that deletes file
+        // TODO:
         //  imageRepository.delete(imageId);
         return new ResponseEntity<>("The image information was deleted!", HttpStatus.OK);
     }
 
     // Returns image
-    @GetMapping("/image/{fileName:.+}")
+    @GetMapping("/images/{fileName:.+}")
     public ResponseEntity downloadFile(@PathVariable String fileName, HttpServletRequest request) throws IOException {
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(fileName);
@@ -156,5 +157,21 @@ public class ImageAPIController {
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+
+    @PostMapping("/images/{imageId}/modified-copies")
+    public ResponseEntity uploadModifiedCopy(@RequestParam("images") MultipartFile multipartFile,
+                                        @PathVariable int imageId,
+                                        @RequestParam("modifiedBy") String modifiedBy,
+                                        @RequestParam("description") String description) {
+
+        fileController.validateFile(multipartFile);
+        File file = fileStorageService.storeFile(multipartFile);
+        imageService.createImageCopy(imageId, modifiedBy, description, file);
+
+        return new ResponseEntity<>("The modified copy of the image has been saved!",
+                HttpStatus.OK);
+
     }
 }

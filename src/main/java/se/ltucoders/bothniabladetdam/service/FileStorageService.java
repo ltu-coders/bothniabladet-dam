@@ -63,4 +63,11 @@ public class FileStorageService {
             throw new FileNotFoundException("File not found " + fileName);
         }
     }
+
+    // Deletes a file
+    void deleteFile(File file) {
+        if(!file.delete()) {
+            throw new FileStorageException("Could not store file " + file.getName() + ". Please try again!");
+        }
+    }
 } // end class
