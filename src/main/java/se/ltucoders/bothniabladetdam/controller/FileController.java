@@ -7,8 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 import se.ltucoders.bothniabladetdam.exception.FileStorageException;
 import se.ltucoders.bothniabladetdam.property.FileContentTypeProperties;
 
-import java.io.IOException;
-
 @Controller
 public class FileController {
     private final FileContentTypeProperties fileContentTypeProperties;
@@ -18,10 +16,20 @@ public class FileController {
         this.fileContentTypeProperties = fileContentTypeProperties;
     }
 
+    // Validates an image
     void validateFile(MultipartFile file) {
         controlName(file);
         controlEmptySubmission(file);
         controlFileType(file);
+    }
+
+    // Validates several images
+    void validateFiles(MultipartFile[] files) {
+        controlEmptySubmission(files);
+        for(MultipartFile file : files) {
+            controlName(file);
+            controlFileType(file);
+        }
     }
 
     // Checks if the file's name contains invalid characters
@@ -33,6 +41,15 @@ public class FileController {
              throw new FileStorageException("Sorry! The file " + fileName +
                      " contains invalid character or " + "sequence of characters!");
          }
+    }
+
+    private void controlEmptySubmission(MultipartFile[] files) {
+        if(files.length <= 0) {
+            throw new FileStorageException("Sorry! You have to upload at least one image!");
+        }
+        for (MultipartFile file : files) {
+            controlEmptySubmission(file);
+        }
     }
 
     // Checks if there is no uploaded file
