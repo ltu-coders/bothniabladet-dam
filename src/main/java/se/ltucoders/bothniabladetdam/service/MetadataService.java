@@ -20,11 +20,13 @@ public class MetadataService {
 
     private Fits fits;
     DataParsingService dataParsingService;
+    GpsLocationService gpsLocationService;
 
     @Autowired
-    public MetadataService(Fits theFits, DataParsingService dataParsingService) {
-            this.fits = theFits;
+    public MetadataService(Fits fits, DataParsingService dataParsingService, GpsLocationService gpsLocationService) {
+            this.fits = fits;
             this.dataParsingService = dataParsingService;
+            this.gpsLocationService = gpsLocationService;
     }
 
 
@@ -160,19 +162,59 @@ public class MetadataService {
     }
 
 
-    public String extractLocation(File file) {
+//    public String extractLocation(File file) {
+//        try {
+//            FitsOutput fitsOutput = fits.examine(file);
+//            FitsMetadataElement gpsLatitude = fitsOutput.getMetadataElement("gpsLatitude");
+//            FitsMetadataElement gpsLongitude = fitsOutput.getMetadataElement("gpsLongitude");
+//            if (gpsLatitude != null && gpsLongitude != null) {
+//                String gpsLocation = gpsLatitude.getValue() + " " + gpsLongitude.getValue();
+//                return gpsLocation;
+//            }
+//        } catch (FitsException ex) {
+//            ex.printStackTrace();
+//        }
+//        return "GPS location is not defined.";
+//    }
+
+
+    public String extractGpsLongitude(File file) {
         try {
             FitsOutput fitsOutput = fits.examine(file);
-            FitsMetadataElement gpsLatitude = fitsOutput.getMetadataElement("gpsLatitude");
-            FitsMetadataElement gpsLongitude = fitsOutput.getMetadataElement("gpsLongitude");
-            if (gpsLatitude != null && gpsLongitude != null) {
-                String gpsLocation = gpsLatitude.getValue() + " " + gpsLongitude.getValue();
-                return gpsLocation;
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("gpsLongitude");
+            if (fitsMetadataElement != null) {
+                String gpsLongitude = fitsMetadataElement.getValue();
+                return gpsLongitude.replace("+", "");
             }
         } catch (FitsException ex) {
             ex.printStackTrace();
         }
-        return "GPS location is not defined.";
+        return null;
+    }
+
+
+    public String extractGpsLatitude(File file) {
+        try {
+            FitsOutput fitsOutput = fits.examine(file);
+            FitsMetadataElement fitsMetadataElement = fitsOutput.getMetadataElement("gpsLatitude");
+            if (fitsMetadataElement != null) {
+                String gpsLatitude = fitsMetadataElement.getValue();
+                return gpsLatitude.replace("+", "");
+            }
+        } catch (FitsException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public String extractLocation(File file) {
+        String gpsLongitude = extractGpsLongitude(file);
+        String gpsLatitude = extractGpsLatitude(file);
+        if (gpsLongitude != null && gpsLatitude != null) {
+            return gpsLocationService.getLocation(gpsLatitude, gpsLongitude);
+        }
+        return "Not defined";
     }
 
 

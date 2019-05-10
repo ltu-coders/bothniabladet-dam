@@ -54,8 +54,6 @@ public class DataParsingService {
     }
 
 
-
-
     // TODO: not a good idea to change user input. Better to use String or Integer.
     // Converts string number to integer.
     public int parseNumber(String stringNumber) {
