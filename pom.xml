@@ -54,6 +54,14 @@
             <artifactId>sqlite-dialect</artifactId>
             <version>0.1.0</version>
         </dependency>
+
+        <!--Needed in the GpsLocationService for extracting data from JSON files-->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180130</version>
+
+        </dependency>
     </dependencies>
 
     <build>

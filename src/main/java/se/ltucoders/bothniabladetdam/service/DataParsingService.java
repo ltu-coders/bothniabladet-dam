@@ -54,17 +54,17 @@ public class DataParsingService {
     }
 
 
-
-
     // TODO: not a good idea to change user input. Better to use String or Integer.
     // Converts string number to integer.
     public int parseNumber(String stringNumber) {
         try {
-            int number = Integer.parseInt(stringNumber);
-            return number;
+            if (stringNumber != null) {
+                int number = Integer.parseInt(stringNumber);
+                return number;
+            }
         } catch (NumberFormatException ex) {
+            System.err.println(ex.getMessage());
             System.err.println("The number can not be parsed. Enter valid number!");
-            ex.printStackTrace();
         }
         return -1;
     }
