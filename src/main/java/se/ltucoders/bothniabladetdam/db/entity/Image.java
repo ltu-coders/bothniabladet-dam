@@ -1,6 +1,7 @@
 package se.ltucoders.bothniabladetdam.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -91,11 +92,11 @@ public class Image implements File {
                     CascadeType.DETACH, CascadeType.REFRESH})
     private Set<ImageCopy> imageCopies;
 
-    @OneToMany(fetch = FetchType.LAZY,
+    @OneToMany(fetch = FetchType.EAGER,
             mappedBy = "image",
             cascade = CascadeType.ALL)
     @JsonBackReference
-    private List<ImageUse> imageUses;
+    private Set<ImageUse> imageUses;
 
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "image",
@@ -275,11 +276,11 @@ public class Image implements File {
         this.imageCopies = imageCopies;
     }
 
-    public List<ImageUse> getImageUses() {
+    public Set<ImageUse> getImageUses() {
         return imageUses;
     }
 
-    public void setImageUses(List<ImageUse> imageUses) {
+    public void setImageUses(Set<ImageUse> imageUses) {
         this.imageUses = imageUses;
     }
 
@@ -291,9 +292,14 @@ public class Image implements File {
         this.orderDetails = orderDetails;
     }
 
+    @JsonInclude
+    public int getImageUseCount() {
+        return this.imageUses.size();
+    }
+
     public void addImageUse(ImageUse theImageUse) {
         if (imageUses == null) {
-            imageUses = new ArrayList<>();
+            imageUses = new HashSet<>();
         }
         imageUses.add(theImageUse);
     }
@@ -308,6 +314,7 @@ public class Image implements File {
             tags = new HashSet<>();
         }
         tags.add(theTag);
+
     }    public void addTag(Set<Tag> theTags){
         if (tags == null){
             tags = new HashSet<>();

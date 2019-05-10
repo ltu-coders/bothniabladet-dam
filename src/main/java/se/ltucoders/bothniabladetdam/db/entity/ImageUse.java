@@ -25,13 +25,21 @@ public class ImageUse {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+    @ManyToOne(cascade = {CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "imageId")
     @JsonBackReference
     private Image image;
 
     public ImageUse() {
+    }
+
+    public ImageUse(LocalDate datePublished, String title, String articleWrittenBy, String description, Image image) {
+        this.datePublished = datePublished;
+        this.title = title;
+        this.articleWrittenBy = articleWrittenBy;
+        this.description = description;
+        this.image = image;
     }
 
     public int getImageUseId() {

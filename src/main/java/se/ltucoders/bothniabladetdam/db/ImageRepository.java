@@ -75,9 +75,10 @@ public class ImageRepository {
         session.save(theImage);
     }
 
-    public void delete(Image theImage) {
+    public void delete(int theId) {
         Session session = entityManager.unwrap(Session.class);
-        session.delete(theImage);
+
+        session.delete(session.get(Image.class, theId));
     }
 
     public List<Image> search(SearchCriteria searchCriteria) {
