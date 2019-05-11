@@ -100,11 +100,8 @@ public class ImageAPIController {
     }
 
 
-
-
-    // TODO: In which situations do we use this method? Do we need it?
     // Gets specific image from the database
-    @GetMapping("images/{imageId}")
+    @GetMapping("images/{imageId:\\d+}")
     public Image search(@PathVariable int imageId) {
         return imageRepository.findById(imageId);
     }

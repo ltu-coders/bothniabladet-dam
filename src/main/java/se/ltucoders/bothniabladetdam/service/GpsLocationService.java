@@ -25,10 +25,15 @@ public class GpsLocationService {
         headers.add(userAgent, headerValue);
         HttpEntity<String> httpEntity = new HttpEntity<String>("parameters", headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
-                String.format("https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=%s&lon=%s", lat, lon),
-                HttpMethod.GET, httpEntity, String.class);
-        return parseResponseEntity(response);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    String.format("https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=%s&lon=%s", lat, lon),
+                    HttpMethod.GET, httpEntity, String.class);
+            return parseResponseEntity(response);
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return "";
+        }
     }
 
 
