@@ -143,7 +143,7 @@ public class ImageAPIController {
     }
 
     // Returns image
-    @GetMapping("/images/{fileName:.+}")
+    @GetMapping("/images/{fileName:.+[.].+}")
     public ResponseEntity downloadFile(@PathVariable String fileName, HttpServletRequest request) throws IOException {
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(fileName);
