@@ -17,6 +17,7 @@ import se.ltucoders.bothniabladetdam.exception.DataStorageException;
 import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 @Service
@@ -47,7 +48,7 @@ public class ImageService {
                             String description, File file) {
         Image image = new Image();
         image.setAuthor(usersRepository.getUserByUsername(author));
-        image.setFileName(file.getName());
+        image.setFileName(createFileName(file));
         image.setFilePath(ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/images/")
                 .path(StringUtils.cleanPath(file.getName()))
@@ -156,5 +157,11 @@ public class ImageService {
             }
         }
         return tagSet;
+    }
+
+    private String createFileName(File theFile) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
+        return String.format("%s_%s", localDateTime.format(formatter), theFile.getName());
     }
 }
