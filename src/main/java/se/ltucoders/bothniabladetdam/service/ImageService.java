@@ -159,6 +159,9 @@ public class ImageService {
         return tagSet;
     }
 
+    /*
+    Creates a timestamp for the file and prepends it to the filename.
+     */
     private String createFileName(File theFile) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
