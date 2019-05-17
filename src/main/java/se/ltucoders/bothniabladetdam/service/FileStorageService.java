@@ -17,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 @Service
@@ -39,6 +41,11 @@ public class FileStorageService {
         // Normalize file name
         // https://docs.oracle.com/javase/tutorial/essential/io/pathOps.html
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+        // Prepend date and time
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
+        fileName =  String.format("%s_%s", localDateTime.format(formatter), fileName);
         try {
             // Copy file to the target location. Replacing existing file with the same name.
             Path targetLocation = this.storageLocation.resolve(fileName);
