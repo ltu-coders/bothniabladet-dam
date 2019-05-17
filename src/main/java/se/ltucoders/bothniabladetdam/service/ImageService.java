@@ -55,12 +55,12 @@ public class ImageService {
                 .toUriString());
         image.setLicenseType(licenseType);
         image.setDescription(description);
-        setMetadata(image, file);
-
+        //setMetadata(image, file);
+        metadataService.extractMetadata(image, file);
         image.setNoOfAllowedUses(12); //TODO: get allowed uses input
         image.setPrice(new BigDecimal(222)); //TODO: get price input
         image.setTags(createTagSet(tags.trim().split("\\s*,\\s*")));
-
+        System.out.println(" ");
         try {
             imageRepository.save(image);
         } catch (JpaSystemException ex) {
