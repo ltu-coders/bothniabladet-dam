@@ -55,12 +55,10 @@ public class ImageService {
                 .toUriString());
         image.setLicenseType(licenseType);
         image.setDescription(description);
-        //setMetadata(image, file);
         metadataService.extractMetadata(image, file);
         image.setNoOfAllowedUses(12); //TODO: get allowed uses input
         image.setPrice(new BigDecimal(222)); //TODO: get price input
         image.setTags(createTagSet(tags.trim().split("\\s*,\\s*")));
-        System.out.println(" ");
         try {
             imageRepository.save(image);
         } catch (JpaSystemException ex) {
@@ -77,8 +75,7 @@ public class ImageService {
         image.setFilePath(imageCopy.getFilePath());
         image.setLicenseType(imageCopy.getImage().getLicenseType());
         image.setDescription(imageCopy.getDescription());
-        setMetadata(image, file);
-
+        metadataService.extractMetadata(image, file);
         image.setNoOfAllowedUses(imageCopy.getImage().getNoOfAllowedUses());
         image.setPrice(imageCopy.getImage().getPrice());
         image.setTags(imageCopy.getImage().getTags());
@@ -121,18 +118,6 @@ public class ImageService {
                     "If this did not help, make sure that original picture has all required " +
                     "fields and contain correct information!");
         }
-    }
-
-    private void setMetadata(Image image, File file) {
-        image.setResolution(metadataService.extractResolution(file));
-        image.setWidth(metadataService.extractWidth(file));
-        image.setHeight(metadataService.extractHeight(file));
-        image.setFileSize(metadataService.extractSize(file));
-        image.setDateTime(metadataService.extractDateTime(file));
-        image.setMake(metadataService.extractCameraManufacturer(file));
-        image.setModel(metadataService.extractCameraModelName(file));
-        image.setLocation(metadataService.extractLocation(file));
-        image.setPuid(metadataService.extrcatPronom(file));
     }
 
     /*
