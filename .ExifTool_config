@@ -1,0 +1,3 @@
+%Image::ExifTool::UserDefined::Options = (
+    CoordFormat => '%+.6f',
+);
