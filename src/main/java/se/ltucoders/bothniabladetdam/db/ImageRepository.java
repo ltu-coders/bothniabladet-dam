@@ -11,10 +11,7 @@ import se.ltucoders.bothniabladetdam.db.entity.Users;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,6 +107,8 @@ public class ImageRepository {
             }
             if (searchCriteria.getTags() != null  && searchCriteria.getTags().length > 0) {
 
+
+
                 //Fetches the id's of the images mapped to specific tags
                 NativeQuery query = session.createNativeQuery(sql);
                 query.setParameterList("tags", searchCriteria.getTags());
@@ -117,6 +116,9 @@ public class ImageRepository {
                 List<Integer> imagesId = query.getResultList();
                 for (int loop = 0; loop < imagesId.size(); loop++) {
                     tagPredicate.add(cBuilder.equal(imageRoot.get("imageId"), imagesId.get(loop)));
+                }
+                for (int loop= 0; loop < searchCriteria.getTags().length; loop++){
+                    tagPredicate.add(cBuilder.equal(imageRoot.get("location"), searchCriteria.getTags()[loop]));
                 }
 
                 Predicate keywords = cBuilder.or(tagPredicate.toArray(new Predicate[0]));

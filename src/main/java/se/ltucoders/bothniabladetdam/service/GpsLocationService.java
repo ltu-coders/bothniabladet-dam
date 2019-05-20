@@ -29,7 +29,7 @@ public class GpsLocationService {
             ResponseEntity<String> response = restTemplate.exchange(
                     String.format("https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=%s&lon=%s", lat, lon),
                     HttpMethod.GET, httpEntity, String.class);
-            return parseResponseEntity(response);
+            return parseResponseEntity(response).toLowerCase();
         } catch (Exception ex) {
             System.out.println(ex);
             return "";
