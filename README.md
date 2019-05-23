@@ -11,8 +11,11 @@ Assignment of creating a web application for Bothniabladet @ Lulea Tekniska Univ
 
 ## Fits configuration
 
-Fits needs to be downloaded from [Fits download](https://projects.iq.harvard.edu/fits/downloads) and extracted to C:\\Program Files\\fits\\fits-VERSION. Configurationfile .ExifTool_config needs to be placed in the user home directory before running the application.
+Fits needs to be downloaded from [Fits download](https://projects.iq.harvard.edu/fits/downloads) and extracted to C:\\Program Files\\fits\\fits-1.4.1. If you have different version of Fits or you want to have different path to it, you have to change the path "fits.path" in the application.properties. The file application.properties can be found in the bothniabladet-dam\src\main\resources\application.properties. Configurationfile .ExifTool_config needs to be placed in the user home directory before running the application.
 
+## Client-side
+
+The front-end for this project can be found on [Bothniabladed-frontend](https://github.com/ltu-coders/bothniabladet-frontend)
 
 ## Authors
 

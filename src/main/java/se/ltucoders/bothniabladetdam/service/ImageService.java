@@ -17,7 +17,6 @@ import se.ltucoders.bothniabladetdam.exception.DataStorageException;
 import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 @Service

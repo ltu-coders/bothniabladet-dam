@@ -13,15 +13,13 @@ import se.ltucoders.bothniabladetdam.db.entity.Image;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Service
 public class MetadataService {
 
     private Fits fits;
-    DataParsingService dataParsingService;
-    GpsLocationService gpsLocationService;
+    private DataParsingService dataParsingService;
+    private GpsLocationService gpsLocationService;
 
     @Autowired
     public MetadataService(Fits fits, DataParsingService dataParsingService, GpsLocationService gpsLocationService) {
@@ -30,7 +28,7 @@ public class MetadataService {
             this.gpsLocationService = gpsLocationService;
     }
 
-    protected void extractMetadata(Image image, File theFile) {
+    void extractMetadata(Image image, File theFile) {
         FitsOutput fitsOutput;
         try {
             fitsOutput = fits.examine(theFile);

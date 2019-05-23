@@ -56,7 +56,7 @@ public class FileStorageService {
         }
     }
 
-    // Uploads file to the client
+    // Make a file to the resource so it can be downloaded
     public Resource loadFileAsResource(String fileName) {
         try {
             Path filePath = this.storageLocation.resolve(fileName).normalize();
@@ -64,14 +64,14 @@ public class FileStorageService {
             if (resource.exists()) {
                 return resource;
             } else {
-                throw new FileNotFoundException("File not found " + fileName);
+                throw new FileNotFoundException("File " + fileName + " not found!" );
             }
         } catch (MalformedURLException e) {
-            throw new FileNotFoundException("File not found " + fileName);
+            throw new FileNotFoundException("File " + fileName + " not found!" );
         }
     }
 
-    // Deletes a file
+    // Deletes a file when saving failed
     void deleteFile(File file) {
         if(!file.delete()) {
             throw new FileStorageException("Could not store file " + file.getName() + ". Please try again!");

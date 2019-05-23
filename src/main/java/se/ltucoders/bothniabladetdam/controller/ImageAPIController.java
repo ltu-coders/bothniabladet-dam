@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import se.ltucoders.bothniabladetdam.db.ImageRepository;
 import se.ltucoders.bothniabladetdam.db.SearchCriteria;
 import se.ltucoders.bothniabladetdam.db.entity.Image;
+import se.ltucoders.bothniabladetdam.exception.FileNotFoundException;
 import se.ltucoders.bothniabladetdam.service.DataParsingService;
 import se.ltucoders.bothniabladetdam.service.FileStorageService;
 import se.ltucoders.bothniabladetdam.service.ImageService;
@@ -67,7 +68,7 @@ public class ImageAPIController {
                               @RequestParam(value = "model", required = false) String model) {
 
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setTags(getTagArray(tags));
+        searchCriteria.setTags(dataParsingService.getTagArray(tags));
         searchCriteria.setLicenseType(licenseType);
         searchCriteria.setAuthor(author);
         searchCriteria.setResolution(resolution);
@@ -84,21 +85,6 @@ public class ImageAPIController {
 
         return imageRepository.search(searchCriteria);
     }
-
-
-    // Converts string with list of search tags to array with tags.
-    // Uses comma as tag separator.
-    private String[] getTagArray(String tagString) {
-        if (tagString != null) {
-            String[] tags = tagString.split(",");
-            for (int i = 0; i < tags.length; i++) {
-                tags[i] = tags[i].trim().replaceAll("[^ 0-9a-zåäöA-ZÅÄÖ]", "");
-            }
-            return tags;
-        }
-        return new String[0];
-    }
-
 
     // Gets specific image from the database
     @GetMapping("images/{imageId:\\d+}")
@@ -144,20 +130,24 @@ public class ImageAPIController {
 
     // Returns image
     @GetMapping("/images/{fileName:.+[.].+}")
-    public ResponseEntity downloadFile(@PathVariable String fileName, HttpServletRequest request) throws IOException {
+    public ResponseEntity downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(fileName);
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(request.getServletContext()
-                        .getMimeType(resource.getFile()
-                                .getAbsolutePath())))
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
+        try {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(request.getServletContext()
+                            .getMimeType(resource.getFile()
+                                    .getAbsolutePath())))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+        } catch (IOException e) {
+            throw new FileNotFoundException("File " + fileName + " not found!" );
+        }
     }
 
-
+    // Store image copy
     @PostMapping("/images/{imageId}/modified-copies")
     public ResponseEntity uploadModifiedCopy(@RequestParam("images") MultipartFile multipartFile,
                                         @PathVariable int imageId,
@@ -170,6 +160,5 @@ public class ImageAPIController {
 
         return new ResponseEntity<>("The modified copy of the image has been saved!",
                 HttpStatus.OK);
-
     }
 }

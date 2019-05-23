@@ -25,8 +25,7 @@ public class DataParsingService {
                         .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
                         .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
                         .toFormatter();
-                LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, formatter);
-                return localDateTime;
+                return LocalDateTime.parse(dateTimeString, formatter);
             }
         } catch (DateTimeParseException ex) {
 
@@ -43,8 +42,7 @@ public class DataParsingService {
             if (dateTimeString != null && !dateTimeString.trim().isEmpty()) {
                 DateTimeFormatter formatter = new DateTimeFormatterBuilder()
                         .appendPattern(format).toFormatter();
-                LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, formatter);
-                return localDateTime;
+                return LocalDateTime.parse(dateTimeString, formatter);
             }
         } catch (DateTimeParseException ex) {
             System.err.println("The date can not be parsed. Enter valid date!");
@@ -59,13 +57,26 @@ public class DataParsingService {
     public int parseNumber(String stringNumber) {
         try {
             if (stringNumber != null) {
-                int number = Integer.parseInt(stringNumber);
-                return number;
+                return Integer.parseInt(stringNumber);
             }
         } catch (NumberFormatException ex) {
             System.err.println(ex.getMessage());
             System.err.println("The number can not be parsed. Enter valid number!");
         }
         return -1;
+    }
+
+
+    // Converts string with list of search tags to array with tags.
+    // Uses comma as tag separator.
+    public String[] getTagArray(String tagString) {
+        if (tagString != null) {
+            String[] tags = tagString.split(",");
+            for (int i = 0; i < tags.length; i++) {
+                tags[i] = tags[i].trim().replaceAll("[^ 0-9a-zåäöA-ZÅÄÖ]", "");
+            }
+            return tags;
+        }
+        return new String[0];
     }
 }

@@ -33,8 +33,6 @@ public class FileController {
     }
 
     // Checks if the file's name contains invalid characters
-    //***If we will change names of the images after they***//
-    //***being uploaded this method can be removed!***//
     private void controlName(MultipartFile file) {
          String fileName = StringUtils.cleanPath(file.getOriginalFilename());
          if (fileName.contains("..") || fileName.contains("/") || fileName.contains("\\")) {
@@ -43,6 +41,7 @@ public class FileController {
          }
     }
 
+    // Checks if the array with files is empty
     private void controlEmptySubmission(MultipartFile[] files) {
         if(files.length <= 0) {
             throw new FileStorageException("Sorry! You have to upload at least one image!");
@@ -52,7 +51,7 @@ public class FileController {
         }
     }
 
-    // Checks if there is no uploaded file
+    // Checks if the file element is empty
     private void controlEmptySubmission(MultipartFile file) {
         if (file.getContentType() == null ||
                 file.isEmpty() ||
