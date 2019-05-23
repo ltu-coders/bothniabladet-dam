@@ -105,9 +105,9 @@ public class ImageRepository {
             if (searchCriteria.getToDate() != null) {
                 predicateList.add(cBuilder.lessThanOrEqualTo(imageRoot.get("dateTime"), searchCriteria.getToDate()));
             }
+            
+            //if tags list contains elements the tags are added as criteras
             if (searchCriteria.getTags() != null  && searchCriteria.getTags().length > 0) {
-
-
 
                 //Fetches the id's of the images mapped to specific tags
                 NativeQuery query = session.createNativeQuery(sql);
@@ -115,10 +115,10 @@ public class ImageRepository {
 
                 List<Integer> imagesId = query.getResultList();
                 for (int loop = 0; loop < imagesId.size(); loop++) {
-                    tagPredicate.add(cBuilder.equal(imageRoot.get("imageId"), imagesId.get(loop)));
+                    tagPredicate.add(cBuilder.equal(imageRoot.get("imageId"), imagesId.get(loop))); //adding images mapping to the tags from search
                 }
                 for (int loop= 0; loop < searchCriteria.getTags().length; loop++){
-                    tagPredicate.add(cBuilder.equal(imageRoot.get("location"), searchCriteria.getTags()[loop]));
+                    tagPredicate.add(cBuilder.equal(imageRoot.get("location"), searchCriteria.getTags()[loop])); //adding location as a criteria
                 }
 
                 Predicate keywords = cBuilder.or(tagPredicate.toArray(new Predicate[0]));
@@ -127,8 +127,8 @@ public class ImageRepository {
                 org.hibernate.query.Query<Image> imageQuery = session.createQuery(criteriaQuery);
 
                 return imageQuery.getResultList();
-            } else {
-
+               //executed if no tags are provided in the search
+            } else { 
                 criteriaQuery.where(cBuilder.and(predicateList.toArray(new Predicate[0]))).distinct(true);
                 org.hibernate.query.Query<Image> imageQuery = session.createQuery(criteriaQuery);
                 return imageQuery.getResultList();
@@ -138,7 +138,7 @@ public class ImageRepository {
         } catch (HibernateException ex) {
             ex.printStackTrace();
         }
-
+        //return empty list if exception got thrown
         return new ArrayList<Image>();
 
     }
