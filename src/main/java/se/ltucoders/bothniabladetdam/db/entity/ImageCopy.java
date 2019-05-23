@@ -142,6 +142,9 @@ public class ImageCopy {
     }
 
 
+    /*
+    * Setting attributes after the object is created. This is for serialisation of attributes not stored in the database table
+    */
     @PostLoad
     protected void initFields(){
 
