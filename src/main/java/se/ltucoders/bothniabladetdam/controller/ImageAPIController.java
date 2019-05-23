@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.File;
 
-//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class ImageAPIController {
 
@@ -30,7 +29,6 @@ public class ImageAPIController {
     private final ImageRepository imageRepository;
     private final ImageService imageService;
     private final DataParsingService dataParsingService;
-
 
     @Autowired
     public ImageAPIController(FileStorageService fileStorageService, FileController fileController,
@@ -42,13 +40,6 @@ public class ImageAPIController {
         this.imageService = imageService;
         this.dataParsingService = dataParsingService;
     }
-
-    // TODO: Are we going to need this method?
-    // Gets alla available images form the database
-//    @GetMapping("/images")
-//    public List<Image> search() {
-//        return imageRepository.findAll();
-//    }
 
     // Get all images that match the specified criteria. Each criteria is optional
     @GetMapping(value = "/images")
