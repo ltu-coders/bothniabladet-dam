@@ -2,19 +2,22 @@ package se.ltucoders.bothniabladetdam.db;
 
 import java.time.LocalDateTime;
 
+/*
+Class providing functionality for searching the database
+*/
 public class SearchCriteria {
     private String[] tags;
     private String licenseType;
     private String author;
-    private String resolution; //Not currently used
+    private String resolution;
     private int maxWidth;
     private int minWidth;
     private int maxHeight;
     private int minHeight;
     private LocalDateTime fromDate;
     private LocalDateTime toDate;
-    private String editor; //Not currently used
-    private String lastModified; //Not currently used
+    private String editor; 
+    private String lastModified; 
     private String make;
     private String model;
 
